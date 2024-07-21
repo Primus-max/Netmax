@@ -15,7 +15,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "Primus-max",
+        "owner": "@Primus-max",
         "repo": "Netmax"
       }
     ]
