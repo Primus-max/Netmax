@@ -4,8 +4,9 @@ const path = require('path');
 let mainWindow = null;
 
 function createWindow() {
-  // Формируем абсолютный путь к preload.js
+  
   const preloadPath = path.resolve(__dirname, 'preload.js');
+  
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
