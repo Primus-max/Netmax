@@ -1,7 +1,7 @@
 {
   "name": "netmax",
   "version": "1.0.1",
-  "description": "",
+  "description": "Site app",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
