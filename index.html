@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electron Puppeteer Example</title>
+</head>
+<body>
+  <h1>Electron Puppeteer Example</h1>
+  <button id="startButton">Start Automation</button>
+
+  <script type="module">
+    import { ipcRenderer } from 'electron';
+    import puppeteer from 'puppeteer-core';
+
+    const puppeteerPath = require.resolve('puppeteer-core');
+
+    // Обработчик клика по кнопке
+    document.getElementById('startButton').addEventListener('click', async () => {
+      try {
+        const browser = await puppeteer.launch({
+          executablePath: puppeteerPath,
+          args: ['--no-sandbox', '--disable-setuid-sandbox'] // Параметры для работы в Electron
+        });
+        const page = await browser.newPage();
+
+        await page.goto('https://avito.ru');
+        await page.waitForSelector('.desktop-lqkwz0');
+        await page.click('.desktop-lqkwz0');
+
+        console.log('Клик выполнен успешно!');
+
+        await browser.close();
+
+        // Отправляем сообщение об успешном выполнении в главный процесс
+        ipcRenderer.send('automationDone', 'Automation completed successfully');
+      } catch (error) {
+        console.error('Произошла ошибка при выполнении действий:', error);
+        // Отправляем сообщение об ошибке в главный процесс
+        ipcRenderer.send('automationDone', `Error occurred: ${error.message}`);
+      }
+    });
+
+    // Обработка ответа от главного процесса (не обязательно, если вы не планируете обрабатывать ответы)
+    ipcRenderer.on('automationDone', (event, message) => {
+      console.log(message); // Выводим результат в консоль
+    });
+  </script>
+</body>
+</html>
