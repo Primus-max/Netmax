@@ -1,6 +1,3 @@
-const dotenv = require('dotenv');
-dotenv.config();
-
 const { app, BrowserWindow } = require('electron');
 const setupAutoUpdater = require('./autoUpdater.js');
 const setupTray = require('./tray.js');
