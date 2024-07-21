@@ -24,7 +24,7 @@ jobs:
         run: npm run build
 
       - name: Check GH_TOKEN
-      run: echo "GH_TOKEN is set to $GH_TOKEN"
+        run: echo "GH_TOKEN is set to $GH_TOKEN"
 
       - name: Publish
         env:
