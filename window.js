@@ -14,6 +14,7 @@ function createWindow() {
     resizable: false,
     maximizable: false,
     minimizable: false,
+    backgroundColor: "#ffffff",
     title: "My App",
     webPreferences: {
       nodeIntegration: false, 

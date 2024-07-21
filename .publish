@@ -1,1 +1,1 @@
-$env:GH_TOKEN="ваш_токен"; npx electron-builder --publish always
+$env:GH_TOKEN="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"; npx electron-builder --publish always
