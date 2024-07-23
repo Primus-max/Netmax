@@ -23,17 +23,18 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadFile('index.html'); // Загружаем локальный файл HTML
+  mainWindow.loadFile('index.html');
 
-  mainWindow.on('close', (event) => {
-    if (!app.isQuiting) {
-      event.preventDefault();
-      mainWindow.hide();
-    }
-  });
+  // mainWindow.on('close', (event) => {
+  //   if (!app.isQuiting) {
+  //     event.preventDefault();
+  //     mainWindow.hide();
+  //   }
+  // });
   
-  ipcMain.on('window-close', () => {
+  ipcMain.on('window-hide', (event) => { // Измените 'window-close' на 'window-hide'
     if (mainWindow) {
+      event.preventDefault();
       mainWindow.hide();
     }
   });
@@ -41,8 +42,9 @@ function createWindow() {
   return mainWindow;
 }
 
-app.on('ready', () => {
-  mainWindow = createWindow();
-  mainWindow.center(); // Центрируем окно на экране
-});
+// app.on('ready', () => {
+//   mainWindow = createWindow();
+//   mainWindow.center(); 
+// });
 
+module.exports = createWindow;

@@ -6,7 +6,7 @@ const createWindow = require('./window.js');
 let mainWindow;
 app.whenReady().then(() => {
   try {
-    mainWindow = createWindow();    
+    mainWindow = createWindow();       
     setupTray(mainWindow);    
     setupAutoUpdater();    
   } catch (error) {
@@ -17,7 +17,7 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow().then((window) => {
         mainWindow = window;
-    
+       
       }).catch((error) => {
         console.error('Error during window creation:', error);
       });

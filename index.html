@@ -35,7 +35,7 @@
 </head>
 <body>
   <div id="title-bar">
-    <div>My App</div>
+    <div>Netmax</div>
     <div>
       <span class="btn" id="close-btn">✖</span>
     </div>
@@ -45,7 +45,7 @@
   <script>
     const { ipcRenderer } = require('electron');
     document.getElementById('close-btn').addEventListener('click', () => {
-      ipcRenderer.send('window-close');
+      ipcRenderer.send('window-hide');
     });
   </script>
 </body>
