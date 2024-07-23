@@ -1,1 +1,5 @@
-$env:GH_TOKEN="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"; npx electron-builder --publish always
+$env:GH_TOKEN="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"; npx electron-builder --publish always
+
+
+PS C:\Users\FedoTT\source\repos\Netmax> $env:GH_TOKEN = "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"
+PS C:\Users\FedoTT\source\repos\Netmax> echo $env:GH_TOKEN

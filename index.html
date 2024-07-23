@@ -3,47 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Electron Puppeteer Example</title>
+  <title>My App</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    #title-bar {
+      height: 30px;
+      background: #2e2e2e;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      -webkit-app-region: drag; /* Позволяет перетаскивать окно за эту область */
+    }
+    #title-bar .btn {
+      cursor: pointer;
+      -webkit-app-region: no-drag; /* Исключает эту область из области перетаскивания */
+    }
+    iframe {
+      flex-grow: 1;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-  <h1>Electron Puppeteer Example</h1>
-  <button id="startButton">Start Automation</button>
+  <div id="title-bar">
+    <div>My App</div>
+    <div>
+      <span class="btn" id="close-btn">✖</span>
+    </div>
+  </div>
+  <iframe src="https://netmax.network" id="web-content"></iframe>
 
-  <script type="module">
-    import { ipcRenderer } from 'electron';
-    import puppeteer from 'puppeteer-core';
-
-    const puppeteerPath = require.resolve('puppeteer-core');
-
-    // Обработчик клика по кнопке
-    document.getElementById('startButton').addEventListener('click', async () => {
-      try {
-        const browser = await puppeteer.launch({
-          executablePath: puppeteerPath,
-          args: ['--no-sandbox', '--disable-setuid-sandbox'] // Параметры для работы в Electron
-        });
-        const page = await browser.newPage();
-
-        await page.goto('https://avito.ru');
-        await page.waitForSelector('.desktop-lqkwz0');
-        await page.click('.desktop-lqkwz0');
-
-        console.log('Клик выполнен успешно!');
-
-        await browser.close();
-
-        // Отправляем сообщение об успешном выполнении в главный процесс
-        ipcRenderer.send('automationDone', 'Automation completed successfully');
-      } catch (error) {
-        console.error('Произошла ошибка при выполнении действий:', error);
-        // Отправляем сообщение об ошибке в главный процесс
-        ipcRenderer.send('automationDone', `Error occurred: ${error.message}`);
-      }
-    });
-
-    // Обработка ответа от главного процесса (не обязательно, если вы не планируете обрабатывать ответы)
-    ipcRenderer.on('automationDone', (event, message) => {
-      console.log(message); // Выводим результат в консоль
+  <script>
+    const { ipcRenderer } = require('electron');
+    document.getElementById('close-btn').addEventListener('click', () => {
+      ipcRenderer.send('window-close');
     });
   </script>
 </body>

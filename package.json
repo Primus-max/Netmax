@@ -1,12 +1,11 @@
 {
   "name": "netmax",
-  "version": "1.0.2",
+  "version": "1.0.8",
   "description": "App desc",
-
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"    
+    "build": "electron-builder"
   },
   "author": "V-Max",
   "license": "ISC",
@@ -15,10 +14,22 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "@Primus-max",
+        "owner": "Primus-max",
         "repo": "Netmax"
       }
-    ]
+    ],
+    "files": [
+      "**/*"
+    ],
+    "extraMetadata": {
+      "name": "netmax"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "netmax-Setup-${version}.${ext}"
+    }
   },
   "devDependencies": {
     "electron": "^31.1.0",

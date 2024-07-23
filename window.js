@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 
 let mainWindow = null;
@@ -10,48 +10,39 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: true,
-    movable: false,
-    resizable: false,
-    maximizable: false,
-    minimizable: false,
-    backgroundColor: "#ffffff",
-    title: "My App",
+    frame: false, 
+    fullscreenable: true,
+    fullscreen: true,
+    resizable: false, 
+    maximizable: false, 
+    movable: false, 
     webPreferences: {
-      nodeIntegration: false, 
-      contextIsolation: true, 
+      nodeIntegration: true, 
+      contextIsolation: false, 
       preload: preloadPath,
     },
   });
 
-  mainWindow.on("close", (event) => {
-    // Предотвращаем закрытие окна
-    event.preventDefault();
-    mainWindow.hide(); // Прячем окно
+  mainWindow.loadFile('index.html'); // Загружаем локальный файл HTML
+
+  mainWindow.on('close', (event) => {
+    if (!app.isQuiting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
   });
-
-  mainWindow.once("ready-to-show", () => {
-    mainWindow.maximize();
+  
+  ipcMain.on('window-close', () => {
+    if (mainWindow) {
+      mainWindow.hide();
+    }
   });
-
-  mainWindow.loadURL("https://netmax.network");
-
-  mainWindow.on("closed", () => {
-    mainWindow = null;
-  });
-
-  mainWindow.webContents.on("new-window", (event, newUrl) => {
-    event.preventDefault();
-    mainWindow.loadURL(newUrl);
-  });
-
-  mainWindow.webContents.on("context-menu", () => {
-    mainWindow.webContents.goBack();
-  });
-
-  mainWindow.webContents.setVisualZoomLevelLimits(1, 1);
 
   return mainWindow;
 }
 
-module.exports = createWindow;
+app.on('ready', () => {
+  mainWindow = createWindow();
+  mainWindow.center(); // Центрируем окно на экране
+});
+

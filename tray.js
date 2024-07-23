@@ -17,11 +17,13 @@ function setupTray(mainWindow) {
     {
       label: "Закрыть",
       click: () => {
-        mainWindow.destroy(); // Закрываем окно
-        app.quit(); // Закрываем приложение
+        app.isQuiting = true;
+        mainWindow.destroy();
+        app.quit();
       },
     },
   ]);
+  
 
   tray.setToolTip("Netmax");
   tray.setContextMenu(contextMenu);
