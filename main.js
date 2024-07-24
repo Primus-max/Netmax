@@ -16,8 +16,7 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow().then((window) => {
-        mainWindow = window;
-       
+        mainWindow = window;       
       }).catch((error) => {
         console.error('Error during window creation:', error);
       });
