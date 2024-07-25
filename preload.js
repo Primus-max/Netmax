@@ -12,4 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     passwordInput.value = "HTY5GTfdJDRUT4#YH#UJDHerdS7$JsW2Fh@h";
   const submitButton = document.querySelector('input[type="submit"]');
   if (submitButton) submitButton.click();
+
+  // Обработка нажатия правой кнопки мыши
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+    window.api.send('go-back');
+  });
 });

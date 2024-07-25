@@ -30,7 +30,7 @@ function createWindow() {
   //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
-
+  mainWindow.loadURL("https://google.com");
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {

@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const setupAutoUpdater = require('./autoUpdater.js');
 const setupTray = require('./tray.js');
 const createWindow = require('./window.js');
@@ -22,6 +22,12 @@ app.whenReady().then(() => {
       });
     }
   });
+});
+
+ipcMain.on('go-back', () => {
+  if (mainWindow.webContents.canGoBack()) {
+    mainWindow.webContents.goBack();
+  }
 });
 
 app.on('window-all-closed', () => {
