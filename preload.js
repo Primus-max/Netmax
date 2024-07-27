@@ -9,12 +9,17 @@ contextBridge.exposeInMainWorld("api", {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const passwordInput = document.getElementById("input_wp_protect_password");
-  if (passwordInput){
-    const pass = await keytar.getPassword("netmax", "password");    
+  if (passwordInput) {
+    const pass = await keytar.getPassword("netmax", "password");
     passwordInput.value = pass;
-  }    
+  }
   const submitButton = document.querySelector('input[type="submit"]');
-  if (submitButton) submitButton.click();
+  if (submitButton) {
+    submitButton.click();
+  }
+
+  // Отправка события основному процессу для скрытия заставки
+  window.api.send('hide-splash');
 
   // Обработка нажатия правой кнопки мыши
   document.addEventListener('contextmenu', (event) => {
@@ -22,3 +27,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.api.send('go-back');
   });
 });
+

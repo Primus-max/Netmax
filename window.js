@@ -2,12 +2,28 @@ const { app, BrowserWindow, ipcMain, screen, Menu } = require("electron");
 const path = require("path");
 
 let mainWindow = null;
+let splash = null;
 
 function createWindow() {
   const preloadPath = path.resolve(__dirname, "preload.js");
 
   // Получаем размеры экрана
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  splash = new BrowserWindow({
+    width: 400,
+    height: 300,
+    fullscreenable: true,
+    fullscreen: true,
+    frame: false,
+    alwaysOnTop: true,
+    transparent: true,
+    webPreferences: {
+      preload: preloadPath,
+    },
+  });
+
+  splash.loadFile('splash.html');
 
   mainWindow = new BrowserWindow({
     width: width,
@@ -19,8 +35,8 @@ function createWindow() {
     movable: false,
     closable: true,
     icon: path.join(__dirname, "./assets/Icon46.png"),
+    show: false,
     webPreferences: {
-      devTools: false,
       nodeIntegration: true,
       contextIsolation: true,
       preload: preloadPath,
@@ -28,14 +44,14 @@ function createWindow() {
     },
   });
 
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
-  //mainWindow.loadURL("https://google.com");
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
     setTimeout(() => {
+      splash.destroy();
       mainWindow.show();
     }, 2000);
   });
