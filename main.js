@@ -1,21 +1,21 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const setupAutoUpdater = require('./autoUpdater.js');
-const setupTray = require('./tray.js');
-const createWindow = require('./window.js');
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
+const setupAutoUpdater = require("./autoUpdater.js");
+const setupTray = require("./tray.js");
+const createWindow = require("./window.js");
 
 // Глобальная переменная для хранения ссылки на главное окно
 let mainWindow;
 let splash;
 
 // Функция для создания главного окна
- function initializeMainWindow() {
+function initializeMainWindow() {
   try {
-    mainWindow =  createWindow();
+    mainWindow = createWindow();
     setupTray(mainWindow);
-    setupAutoUpdater();   
+    setupAutoUpdater();
   } catch (error) {
-    console.error('Error during app initialization:', error);
+    console.error("Error during app initialization:", error);
   }
 }
 
@@ -29,7 +29,7 @@ function handleSecondInstance() {
 }
 
 // Функция для обработки события "скрытия заставки"
-ipcMain.on('hide-splash', () => {
+ipcMain.on("hide-splash", () => {
   splash.destroy();
   mainWindow.show();
 });
@@ -40,36 +40,31 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
-  app.on('second-instance', handleSecondInstance);
+  app.on("second-instance", handleSecondInstance);
 
   app.whenReady().then(initializeMainWindow);
 
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       initializeMainWindow();
     }
   });
 
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
       app.quit();
     }
   });
 
-  ipcMain.on('go-back', () => {
+  ipcMain.on("go-back", () => {
     if (mainWindow && mainWindow.webContents.canGoBack()) {
       mainWindow.webContents.goBack();
     }
   });
-  
- 
-    ipcMain.on("window-hide", (event) => {
-      console.log("CATCH", mainWindow);
-      if (mainWindow) return;
-      //event.preventDefault();
-      mainWindow.hide();
-    }); 
 
-  
-  
+  ipcMain.on("window-hide", (event) => {    
+    if (!mainWindow) return;
+    event.preventDefault();
+    mainWindow.hide();
+  });
 }

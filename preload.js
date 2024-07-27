@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const keytar = require("keytar");
+const createCloseButton = require("./assets/tamplates/closeButton.js");
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
@@ -8,22 +9,7 @@ contextBridge.exposeInMainWorld("api", {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Создаем кастомную кнопку закрытия
-  const closeButton = document.createElement("button");
-  closeButton.innerText = "Закрыть";
-  closeButton.style.position = "absolute";
-  closeButton.style.top = "10px";
-  closeButton.style.right = "10px";
-  closeButton.style.zIndex = "1000";
-  closeButton.style.padding = "10px";
-  closeButton.style.backgroundColor = "#ff5f57";
-  closeButton.style.border = "none";
-  closeButton.style.borderRadius = "5px";
-  closeButton.style.color = "white";
-  closeButton.style.cursor = "pointer";
-  closeButton.id = "close-btn";
-  // Добавляем кнопку в тело документа
-  document.body.appendChild(closeButton);
+  const closeButton = createCloseButton();
 
   const passwordInput = document.getElementById("input_wp_protect_password");
   if (passwordInput) {
@@ -36,16 +22,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Добавляем обработчик события для кнопки закрытия
-  closeButton.addEventListener("click",  (event) => {
-    console.log("RKBELKJL:SKJDF:LKSJD:LFKJ");
-     ipcRenderer.send("window-hide");
+  closeButton.addEventListener("click", () => {    
+    ipcRenderer.send("window-hide");
   });
 
   // Отправка события основному процессу для скрытия заставки
   //ipcRenderer.send("hide-splash");
 
   // Обработка нажатия правой кнопки мыши
-  document.addEventListener("contextmenu", (event) => {    
+  document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
     ipcRenderer.send("go-back");
   });
