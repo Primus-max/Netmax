@@ -13,7 +13,7 @@ let splash;
   try {
     mainWindow =  createWindow();
     setupTray(mainWindow);
-    setupAutoUpdater();
+    setupAutoUpdater();   
   } catch (error) {
     console.error('Error during app initialization:', error);
   }
@@ -33,7 +33,6 @@ ipcMain.on('hide-splash', () => {
   splash.destroy();
   mainWindow.show();
 });
-
 
 // Проверяем, является ли это первым экземпляром
 const gotTheLock = app.requestSingleInstanceLock();
@@ -62,4 +61,15 @@ if (!gotTheLock) {
       mainWindow.webContents.goBack();
     }
   });
+  
+ 
+    ipcMain.on("window-hide", (event) => {
+      console.log("CATCH", mainWindow);
+      if (mainWindow) return;
+      //event.preventDefault();
+      mainWindow.hide();
+    }); 
+
+  
+  
 }

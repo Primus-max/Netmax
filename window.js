@@ -8,13 +8,14 @@ function createWindow() {
   const preloadPath = path.resolve(__dirname, "preload.js");
 
   // Получаем размеры экрана
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  //const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   splash = new BrowserWindow({
-    width: 400,
-    height: 300,
     fullscreenable: true,
     fullscreen: true,
+    resizable: false,
+    maximizable: true,
+    movable: false,
     frame: false,
     alwaysOnTop: true,
     transparent: true,
@@ -23,23 +24,24 @@ function createWindow() {
     },
   });
 
-  splash.loadFile('splash.html');
+  splash.loadFile("splash.html");
 
-  mainWindow = new BrowserWindow({
-    width: width,
-    height: height,
-    frame: true,
-    fullscreenable: true,
+  mainWindow = new BrowserWindow({  
+    frame: false,
+    fullscreen: true,   
     resizable: false,
     maximizable: true,
     movable: false,
     closable: true,
     icon: path.join(__dirname, "./assets/Icon46.png"),
-    show: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
       preload: preloadPath,
+      enableRemoteModule: true,
+    },
+    webContents: {
+      backgroundThrottling: false,
       enableRemoteModule: true,
     },
   });
@@ -47,7 +49,8 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
-  mainWindow.loadURL("https://netmax.network");
+  mainWindow.loadURL("https://google.com");
+  //mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
     setTimeout(() => {
@@ -65,17 +68,22 @@ function createWindow() {
     });
   });
 
-  mainWindow.on("close", (event) => {
+  // mainWindow.on("close", (event) => {
+  //   event.preventDefault();
+  //   mainWindow.hide();
+  // });
+
+  ipcMain.on("close-window", (event) => {
     event.preventDefault();
     mainWindow.hide();
   });
 
-  ipcMain.on("window-hide", (event) => {
-    if (mainWindow) {
-      event.preventDefault();
-      mainWindow.hide();
-    }
-  });
+  // ipcMain.on("window-hide", (event) => {
+  //   console.log("Поймал", event);
+  //   if (mainWindow) return;
+  //   event.preventDefault();
+  //   mainWindow.hide();
+  // });
 
   return mainWindow;
 }
