@@ -18,8 +18,9 @@ function createWindow() {
     maximizable: true,
     movable: false,
     closable: true,
-
+    icon: path.join(__dirname, "icon46.png"),
     webPreferences: {
+      devTools: false,
       nodeIntegration: true,
       contextIsolation: true,
       preload: preloadPath,
@@ -30,7 +31,7 @@ function createWindow() {
   //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
-  mainWindow.loadURL("https://google.com");
+  //mainWindow.loadURL("https://google.com");
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
