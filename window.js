@@ -18,7 +18,7 @@ function createWindow() {
     maximizable: true,
     movable: false,
     closable: true,
-    icon: path.join(__dirname, "icon46.png"),
+    icon: path.join(__dirname, "./assets/Icon46.png"),
     webPreferences: {
       devTools: false,
       nodeIntegration: true,

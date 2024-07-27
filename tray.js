@@ -10,7 +10,7 @@ function setupTray(mainWindow) {
   }
 
   // Используем абсолютный путь для иконки
-  const iconPath = path.join(__dirname, 'icon.png');
+  const iconPath = path.join(__dirname, './assets/icon16.png');
   tray = new Tray(nativeImage.createFromPath(iconPath));
   
   const contextMenu = Menu.buildFromTemplate([

@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
+const keytar = require('keytar');
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
@@ -6,10 +7,12 @@ contextBridge.exposeInMainWorld("api", {
   ipcRenderer: ipcRenderer,
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const passwordInput = document.getElementById("input_wp_protect_password");
-  if (passwordInput)
-    passwordInput.value = "HTY5GTfdJDRUT4#YH#UJDHerdS7$JsW2Fh@h";
+  if (passwordInput){
+    const pass = await keytar.getPassword("netmax", "password");    
+    passwordInput.value = pass;
+  }    
   const submitButton = document.querySelector('input[type="submit"]');
   if (submitButton) submitButton.click();
 

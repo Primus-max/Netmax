@@ -3,12 +3,13 @@ const setupAutoUpdater = require('./autoUpdater.js');
 const setupTray = require('./tray.js');
 const createWindow = require('./window.js');
 
+
 let mainWindow;
-app.whenReady().then(() => {
+app.whenReady().then( async() => {
   try {
     mainWindow = createWindow();       
     setupTray(mainWindow);    
-    setupAutoUpdater();    
+    setupAutoUpdater();       
   } catch (error) {
     console.error('Error during app initialization:', error);
   }
