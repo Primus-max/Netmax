@@ -1,6 +1,6 @@
 {
   "name": "NETMAX",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "App desc",
   "main": "main.js",
   "scripts": {
@@ -11,13 +11,11 @@
   "license": "ISC",
   "build": {
     "appId": "com.v-max.netmax",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "Primus-max",
-        "repo": "Netmax"
-      }
-    ],
+    "publish": [{
+      "provider": "github",
+      "owner": "Primus-max",
+      "repo": "Netmax"
+    }],
     "files": [
       "**/*"
     ],
@@ -30,6 +28,12 @@
         "nsis"
       ],
       "artifactName": "netmax-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": false
     }
   },
   "devDependencies": {
