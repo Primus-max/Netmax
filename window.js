@@ -1,5 +1,15 @@
-const { app, BrowserWindow, ipcMain, screen, Menu } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  screen,
+  Menu,
+  webFrame,
+} = require("electron");
 const path = require("path");
+
+app.commandLine.appendSwitch('force-device-scale-factor', '1');
+app.commandLine.appendSwitch('high-dpi-support', '1');
 
 let mainWindow = null;
 let splash = null;
@@ -26,7 +36,7 @@ function createWindow() {
     frame: false,
     fullscreen: true,
     resizable: false,
-    maximizable: true,
+    maximizable: false,
     closable: true,
     hiddenInMissionControl: true,
     backgroundColor: "#00000000",
@@ -44,27 +54,32 @@ function createWindow() {
     },
   });
 
-  // mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   //mainWindow.loadURL("https://google.com");
   mainWindow.loadURL("https://netmax.network");
 
-  mainWindow.webContents.on("did-finish-load", () => {
+  mainWindow.webContents.on("did-finish-load", () => {    
     setTimeout(() => {
       splash.destroy();
       mainWindow.show();
     }, 2000);
   });
 
-  mainWindow.once("ready-to-show", () => {
-    mainWindow.setBounds({
-      x: screen.getPrimaryDisplay().bounds.x,
-      y: screen.getPrimaryDisplay().bounds.y,
-      width: screen.getPrimaryDisplay().bounds.width,
-      height: screen.getPrimaryDisplay().bounds.height,
-    });
-  });
+  
+  
+
+  // Отключить массштабирование под windows и сохранять чёткие размеры
+
+  // mainWindow.once("ready-to-show", () => {
+  //   mainWindow.setBounds({
+  //     x: screen.getPrimaryDisplay().bounds.x,
+  //     y: screen.getPrimaryDisplay().bounds.y,
+  //     width: screen.getPrimaryDisplay().bounds.width,
+  //     height: screen.getPrimaryDisplay().bounds.height,
+  //   });
+  // });
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();

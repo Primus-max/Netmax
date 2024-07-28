@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const keytar = require("keytar");
+const { webFrame } = require('electron');
 const createCloseButton = require("./assets/tamplates/closeButton.js");
 
 contextBridge.exposeInMainWorld("api", {
@@ -8,7 +9,7 @@ contextBridge.exposeInMainWorld("api", {
   ipcRenderer: ipcRenderer,
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {  
   const closeButton = createCloseButton();
 
   const passwordInput = document.getElementById("input_wp_protect_password");

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, webFrame } = require("electron");
 const path = require("path");
 const setupAutoUpdater = require("./autoUpdater.js");
 const setupTray = require("./tray.js");
@@ -63,9 +63,9 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.on("window-hide", (event) => {    
+  ipcMain.on("window-hide", (event) => {
     if (!mainWindow) return;
     event.preventDefault();
     mainWindow.hide();
-  });
+  }); 
 }
