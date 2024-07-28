@@ -8,6 +8,7 @@ const {
 } = require("electron");
 const path = require("path");
 
+// Отменяет масштабирование приложения
 app.commandLine.appendSwitch('force-device-scale-factor', '1');
 app.commandLine.appendSwitch('high-dpi-support', '1');
 
@@ -56,8 +57,7 @@ function createWindow() {
 
   //mainWindow.webContents.openDevTools();
 
-  Menu.setApplicationMenu(null);
-  //mainWindow.loadURL("https://google.com");
+  Menu.setApplicationMenu(null);  
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {    
@@ -66,21 +66,7 @@ function createWindow() {
       mainWindow.show();
     }, 2000);
   });
-
-  
-  
-
-  // Отключить массштабирование под windows и сохранять чёткие размеры
-
-  // mainWindow.once("ready-to-show", () => {
-  //   mainWindow.setBounds({
-  //     x: screen.getPrimaryDisplay().bounds.x,
-  //     y: screen.getPrimaryDisplay().bounds.y,
-  //     width: screen.getPrimaryDisplay().bounds.width,
-  //     height: screen.getPrimaryDisplay().bounds.height,
-  //   });
-  // });
-
+ 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
     mainWindow.hide();

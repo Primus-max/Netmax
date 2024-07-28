@@ -27,9 +27,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     ipcRenderer.send("window-hide");
   });
 
-  // Отправка события основному процессу для скрытия заставки
-  //ipcRenderer.send("hide-splash");
-
   // Обработка нажатия правой кнопки мыши
   document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
