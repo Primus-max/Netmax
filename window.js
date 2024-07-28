@@ -30,7 +30,7 @@ function createWindow() {
     closable: true,
     hiddenInMissionControl: true,
     backgroundColor: "#00000000",
-    icon: path.join(__dirname, "./assets/Icon46.png"),
+    icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,

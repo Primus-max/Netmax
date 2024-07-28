@@ -24,7 +24,7 @@
       "name": "NETMAX"
     },
     "win": {
-      "icon": "./assets/icon256.png",
+      "icon": "./assets/images/icon256.png",
       "target": [
         "nsis"
       ],

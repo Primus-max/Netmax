@@ -1,6 +1,6 @@
 
 const path = require("path");
-const { app } = require('electron');
+
 function createCloseButton() {
     const closeButton = document.createElement("button");
     closeButton.id = "close-btn";
@@ -17,9 +17,9 @@ function createCloseButton() {
     closeButton.style.height = "20px";
     closeButton.style.cursor = "pointer";
     
-    const imagePath = path.resolve('close.png');
+    const imagePath = path.resolve('./assets/images/close.png');
     const imageUrl = `${imagePath}`;
-    console.log(imageUrl);
+    //console.log(imageUrl);
     const img = document.createElement("img");
     img.src = imageUrl;
     img.style.width = "100%";
@@ -29,12 +29,6 @@ function createCloseButton() {
   
     // Добавление кнопки на страницу
     document.body.appendChild(closeButton);
-  
-    // Обработчик события для кнопки
-    closeButton.addEventListener("click", () => {
-      console.log("Кнопка закрытия нажата");
-      ipcRenderer.send("window-hide");
-    });
   
     return closeButton;
   }
