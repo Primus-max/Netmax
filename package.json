@@ -1,5 +1,5 @@
 {
-  "name": "NETMAX",
+  "name": "Netmax",
   "version": "1.2.3",
   "description": "App desc",
   "main": "main.js",
@@ -10,6 +10,7 @@
   "author": "V-Max",
   "license": "ISC",
   "build": {
+    "productName": "NETMAX",
     "appId": "com.v-max.netmax",
     "publish": [{
       "provider": "github",
@@ -20,7 +21,7 @@
       "**/*"
     ],
     "extraMetadata": {
-      "name": "netmax"
+      "name": "NETMAX"
     },
     "win": {
       "icon": "./assets/icon256.png",
