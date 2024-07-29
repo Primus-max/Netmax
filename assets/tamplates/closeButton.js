@@ -6,9 +6,9 @@ function createCloseButton() {
     
     // Стиль кнопки
     closeButton.style.position = "absolute";
-    closeButton.style.top = "10px";
-    closeButton.style.right = "10px";
-    closeButton.style.zIndex = "1000";
+    closeButton.style.top = "15px";
+    closeButton.style.right = "15px";
+    closeButton.style.zIndex = "10000";
     closeButton.style.padding = "0";
     closeButton.style.backgroundColor = "transparent";
     closeButton.style.border = "none";

@@ -32,7 +32,7 @@ function handleSecondInstance() {
 // Функция для обработки события "скрытия заставки"
 ipcMain.on("hide-splash", () => {
   splash.destroy();
-  mainWindow.show();
+  mainWindow.show();  
 });
 
 // Проверяем, является ли это первым экземпляром
@@ -47,13 +47,13 @@ if (!gotTheLock) {
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      initializeMainWindow();
+      initializeMainWindow();      
     }
   });
 
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
-      app.quit();
+      app.quit();      
     }
   });
 
@@ -66,6 +66,6 @@ if (!gotTheLock) {
   ipcMain.on("window-hide", (event) => {
     if (!mainWindow) return;
     event.preventDefault();
-    mainWindow.hide();
+    mainWindow.hide();    
   }); 
 }

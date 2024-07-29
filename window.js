@@ -55,21 +55,23 @@ function createWindow() {
     },
   });
 
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);  
+  //mainWindow.loadURL("https://google.com");
   mainWindow.loadURL("https://netmax.network");
 
+  let counter = 0;
   mainWindow.webContents.on("did-finish-load", () => {    
     setTimeout(() => {
       splash.destroy();
-      mainWindow.show();
+      mainWindow.show();      
     }, 2000);
   });
  
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
-    mainWindow.hide();
+    mainWindow.hide();    
   });
 
   return mainWindow;
