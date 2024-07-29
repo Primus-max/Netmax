@@ -5,7 +5,7 @@ function createCloseButton() {
     closeButton.id = "close-btn";
     
     // Стиль кнопки
-    closeButton.style.position = "absolute";
+    closeButton.style.position = "fixed";  // Изменили с absolute на fixed
     closeButton.style.top = "15px";
     closeButton.style.right = "15px";
     closeButton.style.zIndex = "10000";
@@ -16,6 +16,7 @@ function createCloseButton() {
     closeButton.style.height = "20px";
     closeButton.style.cursor = "pointer";
     
+    // Путь к изображению кнопки
     const imagePath = path.join(__dirname, '..', 'images', 'close.png'); 
     const imageUrl = `file://${imagePath}`;
     console.log(imageUrl); 
