@@ -9,8 +9,11 @@ contextBridge.exposeInMainWorld("api", {
   ipcRenderer: ipcRenderer,
 });
 
-let counter = 0;
+
 document.addEventListener("DOMContentLoaded", async () => {
+
+  depricateScroll();
+
   const closeButton = createCloseButton();
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -53,3 +56,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     ipcRenderer.send("go-back");
   });
 });
+
+function depricateScroll(){
+  const currentUrl = window.location.href; 
+  if (currentUrl === 'https://netmax.network/media/') {
+    document.body.style.overflow = 'hidden'; 
+    document.body.style.height = '100vh';
+  } else {
+    document.body.style.overflow = ''; 
+  }
+}

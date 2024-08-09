@@ -60,8 +60,7 @@ function createWindow() {
   Menu.setApplicationMenu(null);  
   //mainWindow.loadURL("https://google.com");
   mainWindow.loadURL("https://netmax.network");
-
-  let counter = 0;
+  
   mainWindow.webContents.on("did-finish-load", () => {    
     setTimeout(() => {
       splash.destroy();
@@ -73,6 +72,8 @@ function createWindow() {
     event.preventDefault();
     mainWindow.hide();    
   });
+
+window.onload = () => {}
 
   return mainWindow;
 }

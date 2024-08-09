@@ -21,7 +21,7 @@ function setupAutoUpdater() {
     log.error('Update error:', err);
   });
 
-  autoUpdater.on('download-progress', (progress) => {
+  autoUpdater.on('download-progress', (progress) => {    
     log.info('Download progress:', progress);
   });
 
