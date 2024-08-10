@@ -12,7 +12,10 @@ contextBridge.exposeInMainWorld("api", {
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  depricateScroll();
+  checkAndToggleScrollBlock();
+
+  // Добавляем слушатель на изменение URL (например, через popstate)
+  document.addEventListener('popstate', checkAndToggleScrollBlock);
 
   const closeButton = createCloseButton();
 
@@ -53,16 +56,60 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Обработка нажатия правой кнопки мыши
   document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
-    ipcRenderer.send("go-back");
+    ipcRenderer.send("go-back");    
   });
 });
 
-function depricateScroll(){
-  const currentUrl = window.location.href; 
+// function depricateScroll(){
+//   const currentUrl = window.location.href; 
+//   if (currentUrl === 'https://netmax.network/media/') {
+//     document.body.style.overflow = 'hidden'; 
+//     document.body.style.height = '100vh';
+//   } else {
+//     document.body.style.overflow = ''; 
+//   }
+// }
+
+// Метод для блокировки скролла
+function blockScroll(event) {
+  event.preventDefault();
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+// Метод для активации блокировки скролла
+function enableScrollBlock() {
+  document.body.style.overflow = 'hidden';
+  document.body.style.height = '100vh';
+  document.addEventListener('scroll', blockScroll, { passive: false });
+  document.addEventListener('wheel', blockScroll, { passive: false });
+  document.addEventListener('keydown', handleKeydown, { passive: false });
+}
+
+// Метод для деактивации блокировки скролла
+function disableScrollBlock() {
+  document.body.style.overflow = '';
+  document.body.style.height = '';
+  document.removeEventListener('scroll', blockScroll);
+  document.removeEventListener('wheel', blockScroll);
+  document.removeEventListener('keydown', handleKeydown);
+  console.log('Scroll block disabled');
+}
+
+// Метод для обработки нажатий клавиш, вызывающих прокрутку
+function handleKeydown(event) {
+  const keysToBlock = [32, 33, 34, 35, 36, 38, 40]; // Пробел, PageUp, PageDown, Home, End, Стрелки
+  if (keysToBlock.includes(event.keyCode)) {
+    blockScroll(event);
+  }
+}
+
+// Метод для проверки текущего URL и применения блокировки скролла
+function checkAndToggleScrollBlock() {
+  const currentUrl = document.location.href;
   if (currentUrl === 'https://netmax.network/media/') {
-    document.body.style.overflow = 'hidden'; 
-    document.body.style.height = '100vh';
+    enableScrollBlock();
   } else {
-    document.body.style.overflow = ''; 
+    disableScrollBlock();
   }
 }
