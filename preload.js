@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld("api", {
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+console.log('Current page', document.location.href);
+
   checkAndToggleScrollBlock();
 
   // Добавляем слушатель на изменение URL (например, через popstate)
@@ -55,20 +57,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Обработка нажатия правой кнопки мыши
   document.addEventListener("contextmenu", (event) => {
+    if(document.location.href === 'https://netmax.network/menu/')
+      return;
+
     event.preventDefault();
     ipcRenderer.send("go-back");    
   });
 });
-
-// function depricateScroll(){
-//   const currentUrl = window.location.href; 
-//   if (currentUrl === 'https://netmax.network/media/') {
-//     document.body.style.overflow = 'hidden'; 
-//     document.body.style.height = '100vh';
-//   } else {
-//     document.body.style.overflow = ''; 
-//   }
-// }
 
 // Метод для блокировки скролла
 function blockScroll(event) {
