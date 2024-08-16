@@ -39,7 +39,7 @@ function createWindow() {
     resizable: false,
     maximizable: false,
     closable: true,
-    hiddenInMissionControl: true,
+    hiddenInMissionControl: true,    
     backgroundColor: "#00000000",
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
@@ -55,7 +55,7 @@ function createWindow() {
     },
   });
 
- mainWindow.webContents.openDevTools();
+ //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);  
   //mainWindow.loadURL("https://google.com");
@@ -68,6 +68,11 @@ function createWindow() {
     }, 2000);
   });
  
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {    
+    return { action: 'deny' }; // Предотвращаем открытие нового окна
+});
+
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
     mainWindow.hide();    
@@ -75,5 +80,8 @@ function createWindow() {
 
   return mainWindow;
 }
+
+
+
 
 module.exports = createWindow;
