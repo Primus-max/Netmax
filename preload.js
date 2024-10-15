@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 const keytar = require("keytar");
 const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
-const {authorize, trackLoginForm} = require("./utils/authorize.js");
+const {authorize, trackLoginForm, autoLogin} = require("./utils/authorize.js");
 const {handleMouseMoveUpdate} = require("./utils/windowUtils.js");
 //const {trackLoginForm} = require("./utils/loginUtils.js");
 
@@ -12,8 +12,8 @@ contextBridge.exposeInMainWorld("api", {
   ipcRenderer: ipcRenderer,
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("Current page", document.location.href);
+document.addEventListener("DOMContentLoaded", async () => {  
+  autoLogin();
 
   checkAndToggleScrollBlock();
   // Добавляем слушатель на изменение URL (например, через popstate)

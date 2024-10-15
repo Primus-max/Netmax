@@ -1,4 +1,4 @@
-const { saveLoginData } = require('../store/localStorageStore.js');
+const { saveLoginData, getLastLogin } = require('../store/localStorageStore.js');
 // Авторизация
 function authorize() {
     const protectionForm = document.querySelector(".ppw-swp-form");
@@ -45,4 +45,27 @@ function authorize() {
     }
   }
 
-  module.exports = {authorize, trackLoginForm };
+// Метод для автоматической авторизации
+function autoLogin() {
+  const lastLogin = getLastLogin();
+
+  if (lastLogin) {
+    const emailInput = document.getElementById("pxp-signin-modal-email");
+    const passwordInput = document.getElementById("pxp-signin-modal-password");
+    const submitButton = document.querySelector(".pxp-signin-modal-btn");
+
+    if (emailInput && passwordInput) {
+      emailInput.value = lastLogin.email; 
+      passwordInput.value = lastLogin.password;       
+      console.log("Auto-filling login form with:", lastLogin);
+      if (submitButton) {
+        submitButton.click();
+      } else {
+        console.error("Submit button not found");
+      }      
+    }
+  }
+}
+
+
+  module.exports = {authorize, trackLoginForm, autoLogin};
