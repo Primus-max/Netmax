@@ -12,11 +12,13 @@
   "build": {
     "productName": "NETMAX",
     "appId": "com.v-max.netmax",
-    "publish": [{
-      "provider": "github",
-      "owner": "Primus-max",
-      "repo": "Netmax"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Primus-max",
+        "repo": "Netmax"
+      }
+    ],
     "files": [
       "**/*"
     ],
@@ -43,7 +45,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "electron-log": "^5.1.6",
+    "electron-log": "^5.1.6",    
     "electron-updater": "^6.2.1",
     "keytar": "^7.9.0"
   }

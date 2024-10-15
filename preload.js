@@ -2,8 +2,9 @@ const { contextBridge, ipcRenderer } = require("electron");
 const keytar = require("keytar");
 const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
-const {authorize} = require("./utils/authorize.js");
+const {authorize, trackLoginForm} = require("./utils/authorize.js");
 const {handleMouseMoveUpdate} = require("./utils/windowUtils.js");
+//const {trackLoginForm} = require("./utils/loginUtils.js");
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
@@ -15,9 +16,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("Current page", document.location.href);
 
   checkAndToggleScrollBlock();
-
   // Добавляем слушатель на изменение URL (например, через popstate)
   document.addEventListener("popstate", checkAndToggleScrollBlock);
+
+  // Сохранение авторизационных данных
+  trackLoginForm();
 
   const closeButton = createCloseButton();
 
@@ -46,24 +49,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Обновления страницы по боковой клавише
   handleMouseMoveUpdate();
-  // let lastClickTime = 0;
-  // window.addEventListener("mousedown", (event) => {
-  //   if (event.button === 2) {
-  //     // Проверяем, что нажата правая кнопка мыши
-  //     const currentTime = new Date().getTime();
-  //     const timeDifference = currentTime - lastClickTime;
-
-  //     if (timeDifference < 300) {
-  //       // Если разница между кликами меньше 300 мс, считаем это двойным кликом
-  //       location.reload(); // Перезагружаем страницу
-  //       console.log("Double click");
-  //     }
-
-  //     lastClickTime = currentTime;
-  //   }
-  // });
 });
 
+// TODO вынести все методы в утилиты
 // Метод для блокировки скролла
 function blockScroll(event) {
   event.preventDefault();

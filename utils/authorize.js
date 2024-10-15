@@ -1,3 +1,4 @@
+const { saveLoginData } = require('../store/localStorageStore.js');
 // Авторизация
 function authorize() {
     const protectionForm = document.querySelector(".ppw-swp-form");
@@ -23,5 +24,25 @@ function authorize() {
     } 
   }
 
+// Сохранение авторизационных данных
+  function trackLoginForm() {
+    const emailInput = document.getElementById("pxp-signin-modal-email");
+    const passwordInput = document.getElementById("pxp-signin-modal-password");
+    const submitButton = document.querySelector(".pxp-signin-modal-btn");
+  
+    if (emailInput && passwordInput && submitButton) {
+      submitButton.addEventListener("click", (event) => {
+        event.preventDefault();
+  
+        const email = emailInput.value;
+        const password = passwordInput.value;
+  
+        saveLoginData(email, password);
+        console.log("Login data saved:", { email, password });
+      });
+    } else {
+      console.log("Input fields or submit button not found");
+    }
+  }
 
-  module.exports = {authorize};
+  module.exports = {authorize, trackLoginForm };
