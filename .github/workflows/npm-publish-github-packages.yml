@@ -25,7 +25,8 @@ jobs:
           node-version: 'lts/*'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-cache
+        timeout-minutes: 20
 
       - name: Build the app
         run: npm run build
