@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+# Указываем разрешения на уровне workflow
+permissions:
+  contents: write  # разрешение на запись в содержимое репозитория
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
