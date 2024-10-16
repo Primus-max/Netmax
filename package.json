@@ -42,7 +42,7 @@
       "runAfterFinish": false
     },
     "mac": {
-      "icon": "./assets/images/icon256.png",
+      "icon": "./assets/images/icon512.png",
       "target": [
         "dmg",
         "zip"
