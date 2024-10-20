@@ -8,9 +8,8 @@ on:
     branches:
       - main
 
-# Указываем разрешения на уровне workflow
 permissions:
-  contents: write  # разрешение на запись в содержимое репозитория
+  contents: write
 
 jobs:
   build:
@@ -32,8 +31,15 @@ jobs:
         run: npm install --no-cache
         timeout-minutes: 20
 
-      - name: Build the app
-        run: npm run build
+      - name: Build the app for the platform
+        run: |
+          if [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
+            npm run build -- -w
+          elif [[ "${{ matrix.os }}" == 'macos-latest' ]]; then
+            npm run build -- -m
+          elif [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
+            npm run build -- -l
+          fi
 
       - name: List files after build
         run: ls -R
