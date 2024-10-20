@@ -13,6 +13,10 @@ contextBridge.exposeInMainWorld("api", {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {  
+
+  window.alert = function(){};// Disable alert
+
+  alert("Netmax: 1.0.0");
   autoLogin();
 
   checkAndToggleScrollBlock();
