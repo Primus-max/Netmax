@@ -13,6 +13,9 @@
   },
   "license": "ISC",
   "build": {
+    "directories": {
+      "output": "dist"
+    },
     "productName": "NETMAX",
     "appId": "com.v-max.netmax",
     "publish": [
