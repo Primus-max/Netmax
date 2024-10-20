@@ -11,7 +11,13 @@ let splash;
 // Функция для создания главного окна
 function initializeMainWindow() {
   try {
-    mainWindow = createWindow();
+    const options = {
+      resizable: false,
+      maximizable: true,
+      fullscreen: true,
+    };
+
+    mainWindow = createWindow(options);
     setupTray(mainWindow);
     setupAutoUpdater();
   } catch (error) {
@@ -32,7 +38,7 @@ function handleSecondInstance() {
 // Функция для обработки события "скрытия заставки"
 ipcMain.on("hide-splash", () => {
   splash.destroy();
-  mainWindow.show();  
+  mainWindow.show();
 });
 
 // Проверяем, является ли это первым экземпляром
@@ -47,13 +53,13 @@ if (!gotTheLock) {
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      initializeMainWindow();      
+      initializeMainWindow();
     }
   });
 
   app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
-      app.quit();      
+      app.quit();
     }
   });
 
@@ -66,6 +72,32 @@ if (!gotTheLock) {
   ipcMain.on("window-hide", (event) => {
     if (!mainWindow) return;
     event.preventDefault();
-    mainWindow.hide();    
-  }); 
+    mainWindow.hide();
+  });
+
+  let isResized = false;
+  let lastUrl = "";
+  ipcMain.on("window-resize", (event) => {
+    if (!mainWindow) return;
+
+    if (!isResized) {
+      mainWindow.setResizable(true);
+      mainWindow.setMaximizable(false);
+      mainWindow.setFullScreen(false);
+      lastUrl = mainWindow.webContents.getURL();
+      console.log("lastUrl", lastUrl);
+    } else {
+      const options = {
+        fullscreen: true,
+        resizable: false,
+        maximizable: false,
+      };
+
+      mainWindow.close();
+      mainWindow = createWindow(options);
+      mainWindow.loadURL(lastUrl);
+    }
+    
+    isResized = !isResized;    
+  });
 }

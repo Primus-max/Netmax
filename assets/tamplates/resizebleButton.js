@@ -1,13 +1,13 @@
 const path = require("path");
 
-function createCloseButton() {
+function createResizableButton() {
     const closeButton = document.createElement("button");
-    closeButton.id = "close-btn";
+    closeButton.id = "rizeble-btn";
     
     // Стиль кнопки
     closeButton.style.position = "fixed";  
     closeButton.style.top = "15px";
-    closeButton.style.right = "15px";
+    closeButton.style.right = "41px";
     closeButton.style.zIndex = "10000";
     closeButton.style.padding = "0";
     closeButton.style.backgroundColor = "transparent";
@@ -17,7 +17,7 @@ function createCloseButton() {
     closeButton.style.cursor = "pointer";
     
     // Путь к изображению кнопки
-    const imagePath = path.join(__dirname, '..', 'images', 'close.png'); 
+    const imagePath = path.join(__dirname, '..', 'images', '1111.png'); 
     const imageUrl = `file://${imagePath}`;
     console.log(imageUrl); 
     
@@ -33,4 +33,4 @@ function createCloseButton() {
     return closeButton;
 }
 
-module.exports = createCloseButton;
+module.exports = createResizableButton;

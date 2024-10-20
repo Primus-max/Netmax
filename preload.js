@@ -2,8 +2,13 @@ const { contextBridge, ipcRenderer } = require("electron");
 const keytar = require("keytar");
 const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
-const {authorize, trackLoginForm, autoLogin} = require("./utils/authorize.js");
-const {handleMouseMoveUpdate} = require("./utils/windowUtils.js");
+const createResizableButton = require("./assets/tamplates/resizebleButton.js");
+const {
+  authorize,
+  trackLoginForm,
+  autoLogin,
+} = require("./utils/authorize.js");
+const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
 //const {trackLoginForm} = require("./utils/loginUtils.js");
 
 contextBridge.exposeInMainWorld("api", {
@@ -12,11 +17,13 @@ contextBridge.exposeInMainWorld("api", {
   ipcRenderer: ipcRenderer,
 });
 
-document.addEventListener("DOMContentLoaded", async () => {  
+document.addEventListener("DOMContentLoaded", async () => {
+  window.alert = function () {}; // Глобально отменяю  alert
 
-  window.alert = function(){};// Disable alert
+  // Кнопка войти
+  const enterButton = document.getElementById("slider-1-slide-1-layer-20");
+  enterButton?.click();
 
-  alert("Netmax: 1.0.0");
   autoLogin();
 
   checkAndToggleScrollBlock();
@@ -27,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   trackLoginForm();
 
   const closeButton = createCloseButton();
-
+  const resizableButton = createResizableButton();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   await sleep(1000);
 
@@ -37,6 +44,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Добавляем обработчик события для кнопки закрытия
   closeButton.addEventListener("click", () => {
     ipcRenderer.send("window-hide");
+  });
+
+  // Добавляем обработчик события для кнопки изменения размера окна
+  resizableButton.addEventListener("click", () => {
+    ipcRenderer.send("window-resize");
   });
 
   // Обработка нажатия правой кнопки мыши
@@ -101,7 +113,8 @@ function checkAndToggleScrollBlock() {
   const currentUrl = document.location.href;
   if (
     currentUrl === "https://netmax.network/media/" ||
-    currentUrl === "https://netmax.network/homepage/"
+    currentUrl === "https://netmax.network/homepage/" ||
+    currentUrl === "https://netmax.network/messenger/sample-page/"
   ) {
     enableScrollBlock();
   } else {
@@ -123,8 +136,6 @@ document.addEventListener(
   },
   true
 );
-
-
 
 // Стили для окна с видео, чтобы прилепить к верху
 // function applyVideoStyles() {
