@@ -33,7 +33,7 @@ jobs:
         timeout-minutes: 20
 
       - name: Build the app
-        run: npm run build -- -wml
+        run: npm run build -- -wl
         timeout-minutes: 20
 
       - name: List files after build

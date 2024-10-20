@@ -65,7 +65,8 @@
   },
   "devDependencies": {
     "electron": "^31.1.0",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "dmg-license": "^1.0.0"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
