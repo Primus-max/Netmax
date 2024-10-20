@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  
 
 # Указываем разрешения на уровне workflow
 permissions:
@@ -33,22 +32,16 @@ jobs:
         run: npm install --no-cache
         timeout-minutes: 60
 
-      - name: Build the app (Linux and macOS)
-        if: matrix.os != 'windows-latest'
-        run: npm run build -- -l
-
-      - name: Build the app (Windows)
-        if: matrix.os == 'windows-latest'
-        run: npm run build -- -w
-
-      - name: List files after build
-        run: ls -R
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
         with:
-          name: netmax-build
-          path: dist/
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
   release:
     runs-on: ubuntu-latest
