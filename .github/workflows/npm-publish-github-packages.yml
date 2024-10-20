@@ -3,10 +3,11 @@ name: Build and Publish
 on:
   push:
     branches:
-      - main
+      - dev
   pull_request:
     branches:
       - main
+  
 
 # Указываем разрешения на уровне workflow
 permissions:
@@ -30,7 +31,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install --no-cache
-        timeout-minutes: 20
+        timeout-minutes: 60
 
       - name: Build the app (Linux and macOS)
         if: matrix.os != 'windows-latest'
