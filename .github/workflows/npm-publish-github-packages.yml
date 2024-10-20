@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install --no-cache
-        timeout-minutes: 20
+        timeout-minutes: 60
 
       - name: Build the app (Linux and macOS)
         if: matrix.os != 'windows-latest'
