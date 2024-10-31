@@ -63,12 +63,14 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ github.token }} # встроенная переменная GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ github.token }} 
 
       - name: Upload release artifacts
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.run_number }}
-          files: dist/**
+          files: |
+            dist/*.exe
+            dist/*.AppImage
         env:
-          GITHUB_TOKEN: ${{ github.token }} # встроенная переменная GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ github.token }} 
