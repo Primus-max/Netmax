@@ -63,7 +63,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ github.token }} 
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload release artifacts
         uses: softprops/action-gh-release@v1
@@ -73,4 +73,4 @@ jobs:
             dist/*.exe
             dist/*.AppImage
         env:
-          GITHUB_TOKEN: ${{ github.token }} 
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
