@@ -20,6 +20,7 @@ function initializeMainWindow() {
     mainWindow = createWindow(options);
     setupTray(mainWindow);
     setupAutoUpdater();
+    
   } catch (error) {
     console.error("Error during app initialization:", error);
   }
@@ -97,7 +98,7 @@ if (!gotTheLock) {
       mainWindow = createWindow(options);
       mainWindow.loadURL(lastUrl);
     }
-    
-    isResized = !isResized;    
+
+    isResized = !isResized;
   });
 }

@@ -17,9 +17,7 @@ contextBridge.exposeInMainWorld("api", {
   ipcRenderer: ipcRenderer,
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
-  window.alert = function () {}; // Глобально отменяю  alert
-
+document.addEventListener("DOMContentLoaded", async () => {  
   // Кнопка войти
   const enterButton = document.getElementById("slider-1-slide-1-layer-20");
   enterButton?.click();

@@ -7,9 +7,7 @@ on:
   pull_request:
     branches:
       - main
-  
 
-# Указываем разрешения на уровне workflow
 permissions:
   contents: write # разрешение на запись в содержимое репозитория
 
@@ -18,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout code
@@ -33,8 +31,8 @@ jobs:
         run: npm install --no-cache
         timeout-minutes: 60
 
-      - name: Build the app (Linux and macOS)
-        if: matrix.os != 'windows-latest'
+      - name: Build the app (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: npm run build -- -l
 
       - name: Build the app (Windows)
@@ -47,7 +45,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: netmax-build
+          name: netmax-build-${{ matrix.os }}
           path: dist/
 
   release:
