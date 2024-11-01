@@ -43,15 +43,7 @@
       "perMachine": true,
       "allowToChangeInstallationDirectory": true,
       "runAfterFinish": false
-    },
-    "mac": {
-      "icon": "./assets/images/icon512.png",
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "artifactName": "netmax-${version}.${ext}"
-    },
+    },   
     "linux": {
       "icon": "./assets/images/icon256.png",
       "target": [

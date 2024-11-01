@@ -28,12 +28,13 @@ jobs:
           node-version: "lts/*"
 
       - name: Install dependencies
-        run: npm install --no-cache
+        run: npm install
         timeout-minutes: 60
 
       - name: Build the app (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: npm run build -- -l
+        run: npm run build -- -l --publish=never
+      
 
       # - name: Build the app (Windows)
       #   if: matrix.os == 'windows-latest'
