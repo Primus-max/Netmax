@@ -13,7 +13,11 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]  # Определяем ОС для сборки
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,12 +32,21 @@ jobs:
         timeout-minutes: 60
 
       - name: Build the app
-        run: npm run build -- -l --publish=never 
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            npm run build -- -l --publish=never
+          else
+            npm run build -- -w --publish=never  # Команда для Windows
+          fi 
 
       - name: List files after build
         run: |
           echo "Files in dist directory:"
-          ls -R dist/
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            ls -R dist/
+          else
+            dir dist/  # Используем dir для Windows
+          fi 
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
@@ -42,7 +55,7 @@ jobs:
           path: dist/
 
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Выполняем релиз на Linux
     needs: build
     steps:
       - name: Checkout code again
