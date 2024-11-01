@@ -13,11 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
+    runs-on: ubuntu-latest  # Убираем матрицу для упрощения
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -31,10 +27,9 @@ jobs:
         run: npm install
         timeout-minutes: 60
 
-      - name: Build the app (Linux)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Build the app
         run: npm run build -- -l --publish=never 
-             
+
       - name: List files after build
         run: |
           echo "Files in dist directory:"
@@ -43,7 +38,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: netmax-build-${{ matrix.os }}
+          name: netmax-build  # Убираем матрицу из имени артефакта
           path: dist/
 
   release:
@@ -53,7 +48,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: netmax-build-${{ matrix.os }}
+          name: netmax-build  # Используем то же имя, что и при загрузке
           path: ./dist
 
       - name: Create GitHub Release
