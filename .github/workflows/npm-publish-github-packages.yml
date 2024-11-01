@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Убираем матрицу для упрощения
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,22 +38,33 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: netmax-build  # Убираем матрицу из имени артефакта
+          name: netmax-build
           path: dist/
 
   release:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout code again
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Это необходимо для создания тега
+
+      - name: Create a tag
+        run: |
+          git tag v${{ github.run_number }}  # Создает тег на основе номера сборки
+          git push origin v${{ github.run_number }}  # Отправляет тег на GitHub
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: netmax-build  # Используем то же имя, что и при загрузке
+          name: netmax-build
           path: ./dist
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/*
+          tag_name: v${{ github.run_number }}  # Укажите тег для релиза
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
