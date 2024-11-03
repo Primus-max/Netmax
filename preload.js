@@ -9,6 +9,8 @@ const {
   autoLogin,
 } = require("./utils/authorize.js");
 const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
+const {saveLoginData } = require("./store/localStorageStore.js");
+const {createLoginDropdown} = require('./utils/htmlGeneratorUtils.js');
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
@@ -25,13 +27,22 @@ contextBridge.exposeInMainWorld("api", {
 document.addEventListener("DOMContentLoaded", async () => {
   // Cлушатель на изменение URL
   document.addEventListener("popstate", checkAndToggleScrollBlock);
-  //document.addEventListener("popstate", signOut);
+  
+  const emailInput = document.getElementById("pxp-signin-modal-email");
+  const passwordInput = document.getElementById("pxp-signin-modal-password");
 
-  // Кнопка войти
-  const enterButton = document.getElementById("slider-1-slide-1-layer-20");
-  enterButton?.click();
+  // Проверяем, что поля существуют
+  if (emailInput && passwordInput) 
+      createLoginDropdown(emailInput, passwordInput);
+    
+  setTimeout(() => {
+    const isLoggedOut = localStorage.getItem("isLoggedOut") === "true";
 
-  autoLogin();
+    if (!isLoggedOut) {
+      autoLogin();
+      localStorage.setItem("isLoggedOut", "false");    
+    }
+  }, 300) 
 
   checkAndToggleScrollBlock();
 
