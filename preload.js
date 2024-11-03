@@ -25,6 +25,10 @@ contextBridge.exposeInMainWorld("api", {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
+ // Кнопка войти
+ const enterButton = document.getElementById("slider-1-slide-1-layer-20");
+ enterButton?.click();
+
   // Cлушатель на изменение URL
   document.addEventListener("popstate", checkAndToggleScrollBlock);
   
