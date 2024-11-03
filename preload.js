@@ -1,29 +1,60 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const keytar = require("keytar");
-const { webFrame } = require("electron");
+//const keytar = require("keytar");
+//const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
-const {authorize, trackLoginForm, autoLogin} = require("./utils/authorize.js");
-const {handleMouseMoveUpdate} = require("./utils/windowUtils.js");
-//const {trackLoginForm} = require("./utils/loginUtils.js");
+const createResizableButton = require("./assets/tamplates/resizebleButton.js");
+const {
+  authorize,
+  trackLoginForm,
+  autoLogin,
+} = require("./utils/authorize.js");
+const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
+const {saveLoginData } = require("./store/localStorageStore.js");
+const {createLoginDropdown} = require('./utils/htmlGeneratorUtils.js');
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
   on: (channel, callback) => ipcRenderer.on(channel, callback),
   ipcRenderer: ipcRenderer,
+  getLogoutStatus: async () => {
+   return await ipcRenderer.invoke("get-logout-status");
+  },
+  resetLogoutStatus: async () => {
+    await ipcRenderer.invoke("reset-logout-status");
+  },
 });
 
-document.addEventListener("DOMContentLoaded", async () => {  
-  autoLogin();
+document.addEventListener("DOMContentLoaded", async () => {
+ // Кнопка войти
+ const enterButton = document.getElementById("slider-1-slide-1-layer-20");
+ enterButton?.click();
+
+  // Cлушатель на изменение URL
+  document.addEventListener("popstate", checkAndToggleScrollBlock);
+  
+  const emailInput = document.getElementById("pxp-signin-modal-email");
+  const passwordInput = document.getElementById("pxp-signin-modal-password");
+
+  // Проверяем, что поля существуют
+  if (emailInput && passwordInput) 
+      createLoginDropdown(emailInput, passwordInput);
+    
+  setTimeout(() => {
+    const isLoggedOut = localStorage.getItem("isLoggedOut") === "true";
+
+    if (!isLoggedOut) {
+      autoLogin();
+      localStorage.setItem("isLoggedOut", "false");    
+    }
+  }, 300) 
 
   checkAndToggleScrollBlock();
-  // Добавляем слушатель на изменение URL (например, через popstate)
-  document.addEventListener("popstate", checkAndToggleScrollBlock);
 
   // Сохранение авторизационных данных
   trackLoginForm();
 
   const closeButton = createCloseButton();
-
+  const resizableButton = createResizableButton();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   await sleep(1000);
 
@@ -33,6 +64,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Добавляем обработчик события для кнопки закрытия
   closeButton.addEventListener("click", () => {
     ipcRenderer.send("window-hide");
+  });
+
+  // Добавляем обработчик события для кнопки изменения размера окна
+  resizableButton.addEventListener("click", () => {
+    ipcRenderer.send("window-resize");
   });
 
   // Обработка нажатия правой кнопки мыши
@@ -97,7 +133,8 @@ function checkAndToggleScrollBlock() {
   const currentUrl = document.location.href;
   if (
     currentUrl === "https://netmax.network/media/" ||
-    currentUrl === "https://netmax.network/homepage/"
+    currentUrl === "https://netmax.network/homepage/" ||
+    currentUrl === "https://netmax.network/messenger/sample-page/"
   ) {
     enableScrollBlock();
   } else {
@@ -120,29 +157,8 @@ document.addEventListener(
   true
 );
 
-
-
-// Стили для окна с видео, чтобы прилепить к верху
-// function applyVideoStyles() {
-//   const videoElement = document.querySelector('video.wp-video-shortcode');
-
-//   if (videoElement) {
-//     videoElement.style.position = 'fixed';
-//     videoElement.style.top = '50px';
-//     videoElement.style.left = '50%';
-//     videoElement.style.transform = 'translateX(-50%)';
-//     videoElement.style.zIndex = '1000';
-//     videoElement.style.width = 'auto';
-//     videoElement.style.height = 'auto';
-//     console.log('Video styles applied');
-//   }
-// }
-
-// Объект MutationObserver для отслеживания изменений в DOM, чтобы прилепить видео к верху
-// const observer = new MutationObserver((mutationsList) => {
-//   for (const mutation of mutationsList) {
-//     if (mutation.type === 'childList') {
-//       applyVideoStyles();
-//     }
-//   }
-// });
+function signOut() {
+  alert("try to sign out");
+  const currentUrl = document.location.href;
+  if (currentUrl.includes("action=logout")) alert("Sign out");
+}

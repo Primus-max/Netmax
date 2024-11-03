@@ -1,22 +1,26 @@
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  screen,
-  Menu,
-  webFrame,
-} = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const path = require("path");
-
-// Отменяет масштабирование приложения
-app.commandLine.appendSwitch('force-device-scale-factor', '1');
-app.commandLine.appendSwitch('high-dpi-support', '1');
 
 let mainWindow = null;
 let splash = null;
+let isLoggedOut = false;
 
-function createWindow() {
+// Параметры по умолчанию
+const defaultWindowOptions = {
+  fullscreen: true,
+  resizable: false,
+  maximizable: false,
+};
+
+function createWindow(options = {}) {
   const preloadPath = path.resolve(__dirname, "preload.js");
+
+  // Объединяем переданные параметры с параметрами по умолчанию
+  const windowOptions = {
+    ...defaultWindowOptions,
+    ...options,
+  };
+
   splash = new BrowserWindow({
     fullscreenable: true,
     fullscreen: true,
@@ -35,11 +39,11 @@ function createWindow() {
 
   mainWindow = new BrowserWindow({
     frame: false,
-    fullscreen: true,
-    resizable: false,
-    maximizable: false,
+    resizable: windowOptions.resizable,
+    maximizable: windowOptions.maximizable,
+    fullscreen: windowOptions.fullscreen,
     closable: true,
-    hiddenInMissionControl: true,    
+    hiddenInMissionControl: true,
     backgroundColor: "#00000000",
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
@@ -55,33 +59,37 @@ function createWindow() {
     },
   });
 
- mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
-  Menu.setApplicationMenu(null);  
-  //mainWindow.loadURL("https://google.com");
+  Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
-  
-  mainWindow.webContents.on("did-finish-load", () => {    
+
+  mainWindow.webContents.on("did-finish-load", () => {
     setTimeout(() => {
       splash.destroy();
-      mainWindow.show();      
+      mainWindow.show();
     }, 2000);
   });
- 
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {    
-    return { action: 'deny' }; // Предотвращаем открытие нового окна
-});
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    return { action: "deny" }; // Предотвращаем открытие нового окна
+  });
+
+  mainWindow.webContents.on("will-navigate", (event, url) => {
+    if (url.includes("action=logout")) {
+      mainWindow.webContents.executeJavaScript("localStorage.setItem('isLoggedOut', 'true');");
+    }
+  });
+
+  // ipcMain.handle('get-logout-status', () => isLoggedOut);
+  // ipcMain.handle('reset-logout-status', () => {isLoggedOut = false;});
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
-    mainWindow.hide();    
+    mainWindow.hide();
   });
 
   return mainWindow;
 }
-
-
-
 
 module.exports = createWindow;
