@@ -1,4 +1,5 @@
 const { saveLoginData, getLastLogin } = require('../store/localStorageStore.js');
+const {createLoginDropdown} = require('./htmlGeneratorUtils.js');
 // Авторизация
 function authorize() {
     const protectionForm = document.querySelector(".ppw-swp-form");
@@ -38,7 +39,7 @@ function authorize() {
         const password = passwordInput.value;
   
         saveLoginData(email, password);
-        console.log("Login data saved:", { email, password });
+        localStorage.setItem("isLoggedOut", "false");  
       });
     } else {
       console.log("Input fields or submit button not found");
@@ -46,8 +47,8 @@ function authorize() {
   }
 
 // Метод для автоматической авторизации
-function autoLogin() {
-  const lastLogin = getLastLogin();
+ function autoLogin() {
+  const lastLogin = getLastLogin(); // получаем последний логин
 
   if (lastLogin) {
     const emailInput = document.getElementById("pxp-signin-modal-email");
@@ -56,8 +57,8 @@ function autoLogin() {
 
     if (emailInput && passwordInput) {
       emailInput.value = lastLogin.email; 
-      passwordInput.value = lastLogin.password;       
-      console.log("Auto-filling login form with:", lastLogin);
+      passwordInput.value = lastLogin.password;             
+
       if (submitButton) {
         submitButton.click();
       } else {
@@ -66,6 +67,7 @@ function autoLogin() {
     }
   }
 }
+
 
 
   module.exports = {authorize, trackLoginForm, autoLogin};

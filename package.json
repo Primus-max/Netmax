@@ -1,6 +1,6 @@
 {
   "name": "Netmax",
-  "version": "1.3.7",
+  "version": "1.3.9",
   "description": "App for NETMAX",
   "main": "main.js",
   "scripts": {
@@ -43,15 +43,7 @@
       "perMachine": true,
       "allowToChangeInstallationDirectory": true,
       "runAfterFinish": false
-    },
-    "mac": {
-      "icon": "./assets/images/icon512.png",
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "artifactName": "netmax-${version}.${ext}"
-    },
+    },   
     "linux": {
       "icon": "./assets/images/icon256.png",
       "target": [
