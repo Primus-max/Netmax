@@ -46,7 +46,14 @@ function authorize() {
   }
 
 // Метод для автоматической авторизации
-function autoLogin() {
+async function autoLogin() {
+  const isLoggedOut = localStorage.getItem("isLoggedOut") === "true";
+  if(isLoggedOut) {
+    console.log("Auto-login failed: user is logged out");
+    localStorage.setItem("isLoggedOut", "false");
+    return;
+  }
+
   const lastLogin = getLastLogin();
 
   if (lastLogin) {
@@ -56,8 +63,7 @@ function autoLogin() {
 
     if (emailInput && passwordInput) {
       emailInput.value = lastLogin.email; 
-      passwordInput.value = lastLogin.password;       
-      console.log("Auto-filling login form with:", lastLogin);
+      passwordInput.value = lastLogin.password;             
       if (submitButton) {
         submitButton.click();
       } else {

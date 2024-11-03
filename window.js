@@ -1,13 +1,9 @@
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  Menu,
-} = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const path = require("path");
 
 let mainWindow = null;
 let splash = null;
+let isLoggedOut = false;
 
 // Параметры по умолчанию
 const defaultWindowOptions = {
@@ -18,7 +14,7 @@ const defaultWindowOptions = {
 
 function createWindow(options = {}) {
   const preloadPath = path.resolve(__dirname, "preload.js");
-  
+
   // Объединяем переданные параметры с параметрами по умолчанию
   const windowOptions = {
     ...defaultWindowOptions,
@@ -65,23 +61,32 @@ function createWindow(options = {}) {
 
   mainWindow.webContents.openDevTools();
 
-  Menu.setApplicationMenu(null);  
+  Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
-  
-  mainWindow.webContents.on("did-finish-load", () => {    
+
+  mainWindow.webContents.on("did-finish-load", () => {
     setTimeout(() => {
       splash.destroy();
-      mainWindow.show();      
+      mainWindow.show();
     }, 2000);
   });
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {    
-    return { action: 'deny' }; // Предотвращаем открытие нового окна
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    return { action: "deny" }; // Предотвращаем открытие нового окна
   });
+
+  mainWindow.webContents.on("will-navigate", (event, url) => {
+    if (url.includes("action=logout")) {
+      mainWindow.webContents.executeJavaScript("localStorage.setItem('isLoggedOut', 'true');");
+    }
+  });
+
+  // ipcMain.handle('get-logout-status', () => isLoggedOut);
+  // ipcMain.handle('reset-logout-status', () => {isLoggedOut = false;});
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
-    mainWindow.hide();    
+    mainWindow.hide();
   });
 
   return mainWindow;

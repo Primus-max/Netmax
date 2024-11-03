@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const keytar = require("keytar");
-const { webFrame } = require("electron");
+//const keytar = require("keytar");
+//const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
 const createResizableButton = require("./assets/tamplates/resizebleButton.js");
 const {
@@ -9,15 +9,24 @@ const {
   autoLogin,
 } = require("./utils/authorize.js");
 const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
-//const {trackLoginForm} = require("./utils/loginUtils.js");
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
   on: (channel, callback) => ipcRenderer.on(channel, callback),
   ipcRenderer: ipcRenderer,
+  getLogoutStatus: async () => {
+   return await ipcRenderer.invoke("get-logout-status");
+  },
+  resetLogoutStatus: async () => {
+    await ipcRenderer.invoke("reset-logout-status");
+  },
 });
 
-document.addEventListener("DOMContentLoaded", async () => {  
+document.addEventListener("DOMContentLoaded", async () => {
+  // Cлушатель на изменение URL
+  document.addEventListener("popstate", checkAndToggleScrollBlock);
+  //document.addEventListener("popstate", signOut);
+
   // Кнопка войти
   const enterButton = document.getElementById("slider-1-slide-1-layer-20");
   enterButton?.click();
@@ -25,8 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   autoLogin();
 
   checkAndToggleScrollBlock();
-  // Добавляем слушатель на изменение URL (например, через popstate)
-  document.addEventListener("popstate", checkAndToggleScrollBlock);
 
   // Сохранение авторизационных данных
   trackLoginForm();
@@ -135,27 +142,8 @@ document.addEventListener(
   true
 );
 
-// Стили для окна с видео, чтобы прилепить к верху
-// function applyVideoStyles() {
-//   const videoElement = document.querySelector('video.wp-video-shortcode');
-
-//   if (videoElement) {
-//     videoElement.style.position = 'fixed';
-//     videoElement.style.top = '50px';
-//     videoElement.style.left = '50%';
-//     videoElement.style.transform = 'translateX(-50%)';
-//     videoElement.style.zIndex = '1000';
-//     videoElement.style.width = 'auto';
-//     videoElement.style.height = 'auto';
-//     console.log('Video styles applied');
-//   }
-// }
-
-// Объект MutationObserver для отслеживания изменений в DOM, чтобы прилепить видео к верху
-// const observer = new MutationObserver((mutationsList) => {
-//   for (const mutation of mutationsList) {
-//     if (mutation.type === 'childList') {
-//       applyVideoStyles();
-//     }
-//   }
-// });
+function signOut() {
+  alert("try to sign out");
+  const currentUrl = document.location.href;
+  if (currentUrl.includes("action=logout")) alert("Sign out");
+}
