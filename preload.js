@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 //const keytar = require("keytar");
 //const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
-const createResizableButton = require("./assets/tamplates/resizebleButton.js");
+const {createMinimizeButton, createMaximizeButton} = require("./assets/tamplates/resizebleButton.js");
 const {
   authorize,
   trackLoginForm,
@@ -25,6 +25,13 @@ contextBridge.exposeInMainWorld("api", {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  await sleep(1000);
+
+  // Авторизация
+  authorize();
+
  // Кнопка войти
  const enterButton = document.getElementById("slider-1-slide-1-layer-20");
  enterButton?.click();
@@ -54,12 +61,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   trackLoginForm();
 
   const closeButton = createCloseButton();
-  const resizableButton = createResizableButton();
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  await sleep(1000);
-
-  // Авторизация
-  authorize();
+  const minimizeBtn = createMinimizeButton();
+  const maximizeBtn = createMaximizeButton();
+  
 
   // Добавляем обработчик события для кнопки закрытия
   closeButton.addEventListener("click", () => {
@@ -67,7 +71,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Добавляем обработчик события для кнопки изменения размера окна
-  resizableButton.addEventListener("click", () => {
+  minimizeBtn.addEventListener("click", () => {
+    ipcRenderer.send("window-resize");
+  });
+
+  maximizeBtn.addEventListener("click", () => {
     ipcRenderer.send("window-resize");
   });
 

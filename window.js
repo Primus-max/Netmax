@@ -44,7 +44,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
-    backgroundColor: "#00000000",
+    backgroundColor: "#9a9a9a",
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
@@ -58,8 +58,8 @@ function createWindow(options = {}) {
       enableRemoteModule: true,
     },
   });
-
-  mainWindow.webContents.openDevTools();
+  
+  //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
@@ -80,9 +80,7 @@ function createWindow(options = {}) {
       mainWindow.webContents.executeJavaScript("localStorage.setItem('isLoggedOut', 'true');");
     }
   });
-
-  // ipcMain.handle('get-logout-status', () => isLoggedOut);
-  // ipcMain.handle('reset-logout-status', () => {isLoggedOut = false;});
+  
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
