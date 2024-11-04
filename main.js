@@ -20,7 +20,6 @@ function initializeMainWindow() {
     mainWindow = createWindow(options);
     setupTray(mainWindow);
     setupAutoUpdater();
-    
   } catch (error) {
     console.error("Error during app initialization:", error);
   }
@@ -78,27 +77,24 @@ if (!gotTheLock) {
 
   let isResized = false;
   let lastUrl = "";
+  
   ipcMain.on("window-resize", (event) => {
     if (!mainWindow) return;
-
+  
     if (!isResized) {
       mainWindow.setResizable(true);
-      mainWindow.setMaximizable(false);
-      mainWindow.setFullScreen(false);
+      mainWindow.setMaximizable(true);  
+      mainWindow.setFullScreen(false);  
       lastUrl = mainWindow.webContents.getURL();
-      console.log("lastUrl", lastUrl);
+      console.log("Switched to windowed mode:", lastUrl);
     } else {
-      const options = {
-        fullscreen: true,
-        resizable: false,
-        maximizable: false,
-      };
-
-      mainWindow.close();
-      mainWindow = createWindow(options);
-      mainWindow.loadURL(lastUrl);
+      mainWindow.setFullScreen(true);   
+      mainWindow.setResizable(false);
+      mainWindow.setMaximizable(false);
+      console.log("Switched to fullscreen mode:", lastUrl);
     }
-
+  
     isResized = !isResized;
   });
+  
 }

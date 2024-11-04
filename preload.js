@@ -2,22 +2,25 @@ const { contextBridge, ipcRenderer } = require("electron");
 //const keytar = require("keytar");
 //const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
-const createResizableButton = require("./assets/tamplates/resizebleButton.js");
+const {
+  createMinimizeButton,
+  createMaximizeButton,
+} = require("./assets/tamplates/resizebleButton.js");
 const {
   authorize,
   trackLoginForm,
   autoLogin,
 } = require("./utils/authorize.js");
 const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
-const {saveLoginData } = require("./store/localStorageStore.js");
-const {createLoginDropdown} = require('./utils/htmlGeneratorUtils.js');
+const { saveLoginData } = require("./store/localStorageStore.js");
+const { createLoginDropdown } = require("./utils/htmlGeneratorUtils.js");
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
   on: (channel, callback) => ipcRenderer.on(channel, callback),
   ipcRenderer: ipcRenderer,
   getLogoutStatus: async () => {
-   return await ipcRenderer.invoke("get-logout-status");
+    return await ipcRenderer.invoke("get-logout-status");
   },
   resetLogoutStatus: async () => {
     await ipcRenderer.invoke("reset-logout-status");
@@ -25,28 +28,34 @@ contextBridge.exposeInMainWorld("api", {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
- // Кнопка войти
- const enterButton = document.getElementById("slider-1-slide-1-layer-20");
- enterButton?.click();
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  await sleep(1000);
+
+  // Авторизация
+  authorize();
+
+  // Кнопка войти
+  const enterButton = document.getElementById("slider-1-slide-1-layer-20");
+  enterButton?.click();
 
   // Cлушатель на изменение URL
   document.addEventListener("popstate", checkAndToggleScrollBlock);
-  
+
   const emailInput = document.getElementById("pxp-signin-modal-email");
   const passwordInput = document.getElementById("pxp-signin-modal-password");
 
   // Проверяем, что поля существуют
-  if (emailInput && passwordInput) 
-      createLoginDropdown(emailInput, passwordInput);
-    
+  if (emailInput && passwordInput)
+    createLoginDropdown(emailInput, passwordInput);
+
   setTimeout(() => {
     const isLoggedOut = localStorage.getItem("isLoggedOut") === "true";
 
     if (!isLoggedOut) {
       autoLogin();
-      localStorage.setItem("isLoggedOut", "false");    
+      localStorage.setItem("isLoggedOut", "false");
     }
-  }, 300) 
+  }, 300);
 
   checkAndToggleScrollBlock();
 
@@ -54,12 +63,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   trackLoginForm();
 
   const closeButton = createCloseButton();
-  const resizableButton = createResizableButton();
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  await sleep(1000);
-
-  // Авторизация
-  authorize();
+  const minimizeBtn = createMinimizeButton();
+  const maximizeBtn = createMaximizeButton();
 
   // Добавляем обработчик события для кнопки закрытия
   closeButton.addEventListener("click", () => {
@@ -67,7 +72,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Добавляем обработчик события для кнопки изменения размера окна
-  resizableButton.addEventListener("click", () => {
+  minimizeBtn.addEventListener("click", () => {
+    ipcRenderer.send("window-resize");
+  });
+
+  maximizeBtn.addEventListener("click", () => {
     ipcRenderer.send("window-resize");
   });
 
@@ -150,15 +159,10 @@ document.addEventListener(
       let target = event.target;
       if (target.tagName === "A") {
         // Если это ссылка
+        console.log("Link clicked:", target.href);
         event.preventDefault(); // Блокируем открытие ссылки
       }
     }
   },
   true
 );
-
-function signOut() {
-  alert("try to sign out");
-  const currentUrl = document.location.href;
-  if (currentUrl.includes("action=logout")) alert("Sign out");
-}
