@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu, screen } = require("electron");
 const path = require("path");
 
 let mainWindow = null;
@@ -72,8 +72,32 @@ function createWindow(options = {}) {
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    return { action: "deny" }; // Предотвращаем открытие нового окна
+    const isExternalLink = /^https?:\/\//.test(url);
+  
+    if (isExternalLink) {
+      // Получаем размеры основного экрана пользователя
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          frame: true,
+          resizable: true,
+          maximizable: true,
+          width,  // ширина экрана
+          height, // высота экрана
+          webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+          }
+        }
+      };
+    }
+  
+    // Блокируем создание нового окна для внутренних действий
+    return { action: "deny" };
   });
+  
 
   mainWindow.webContents.on("will-navigate", (event, url) => {
     if (url.includes("action=logout")) {
