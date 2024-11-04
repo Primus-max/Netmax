@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu, screen } = require("electron");
 const path = require("path");
 
 let mainWindow = null;
@@ -44,7 +44,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
-    backgroundColor: "#00000000",
+    backgroundColor: "#9a9a9a",
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
@@ -58,8 +58,8 @@ function createWindow(options = {}) {
       enableRemoteModule: true,
     },
   });
-
-  mainWindow.webContents.openDevTools();
+  
+  //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
@@ -72,17 +72,39 @@ function createWindow(options = {}) {
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    return { action: "deny" }; // Предотвращаем открытие нового окна
+    const isExternalLink = /^https?:\/\//.test(url);
+  
+    if (isExternalLink) {
+      // Получаем размеры основного экрана пользователя
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          frame: true,
+          resizable: true,
+          maximizable: true,
+          width,  // ширина экрана
+          height, // высота экрана
+          webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+          }
+        }
+      };
+    }
+  
+    // Блокируем создание нового окна для внутренних действий
+    return { action: "deny" };
   });
+  
 
   mainWindow.webContents.on("will-navigate", (event, url) => {
     if (url.includes("action=logout")) {
       mainWindow.webContents.executeJavaScript("localStorage.setItem('isLoggedOut', 'true');");
     }
   });
-
-  // ipcMain.handle('get-logout-status', () => isLoggedOut);
-  // ipcMain.handle('reset-logout-status', () => {isLoggedOut = false;});
+  
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();

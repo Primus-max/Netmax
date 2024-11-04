@@ -1,36 +1,45 @@
 const path = require("path");
 
-function createResizableButton() {
-    const closeButton = document.createElement("button");
-    closeButton.id = "rizeble-btn";
-    
+function createButton(id, rightPosition, imageName) {
+    const button = document.createElement("button");
+    button.id = id;
+
     // Стиль кнопки
-    closeButton.style.position = "fixed";  
-    closeButton.style.top = "15px";
-    closeButton.style.right = "41px";
-    closeButton.style.zIndex = "10000";
-    closeButton.style.padding = "0";
-    closeButton.style.backgroundColor = "transparent";
-    closeButton.style.border = "none";
-    closeButton.style.width = "20px";
-    closeButton.style.height = "20px";
-    closeButton.style.cursor = "pointer";
-    
+    button.style.position = "fixed";
+    button.style.top = "15px";
+    button.style.right = `${rightPosition}px`;
+    button.style.zIndex = "10000";
+    button.style.padding = "0";
+    button.style.backgroundColor = "transparent";
+    button.style.border = "none";
+    button.style.width = "20px";
+    button.style.height = "20px";
+    button.style.cursor = "pointer";
+
     // Путь к изображению кнопки
-    const imagePath = path.join(__dirname, '..', 'images', '1111.png'); 
+    const imagePath = path.join(__dirname, '..', 'images', imageName);
     const imageUrl = `file://${imagePath}`;
-    console.log(imageUrl); 
-    
+    console.log(imageUrl);
+
     const img = document.createElement("img");
     img.src = imageUrl;
     img.style.width = "100%";
     img.style.height = "100%";
     img.style.objectFit = "contain";
-    closeButton.appendChild(img);  
-    
-    document.body.appendChild(closeButton);
-  
-    return closeButton;
+    button.appendChild(img);
+
+    document.body.appendChild(button);
+
+    return button;
 }
 
-module.exports = createResizableButton;
+function createMinimizeButton() {
+    return createButton("minimize-btn", 41, "minimize.png");
+}
+
+function createMaximizeButton() {
+    return createButton("maximize-btn", 72, "maximise.png");
+}
+
+
+module.exports = {createMinimizeButton, createMaximizeButton};
