@@ -90,18 +90,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener(
     "mousedown",
     function (event) {
+      // Проверяем, что это средний клик мыши
       if (event.button === 1) {
         let target = event.target;
+
+        // Ищем родительский элемент ссылки
         while (target && target.tagName !== "A") {
           target = target.parentElement;
         }
 
         if (target && target.tagName === "A") {
-          console.log("Средний клик по ссылке:", target.href);
-
-          event.preventDefault();
-          event.stopPropagation();
-
+          ipcRenderer.send("middle-btn-blocked");
           return false;
         }
       }
