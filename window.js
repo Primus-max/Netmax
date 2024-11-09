@@ -58,7 +58,7 @@ function createWindow(options = {}) {
       enableRemoteModule: true,
     },
   });
-  
+
   mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
@@ -73,36 +73,42 @@ function createWindow(options = {}) {
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     const isExternalLink = /^https?:\/\//.test(url);
-  
-    if (isExternalLink) {      
+
+    if (isExternalLink) {
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-  
+
+      // Возвращаем разрешение на открытие окна с нужными параметрами
       return {
         action: "allow",
         overrideBrowserWindowOptions: {
           frame: true,
           resizable: true,
           maximizable: true,
-          width,  
-          height, 
+          width,
+          height,
           webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-          }
-        }
+          },
+        },
       };
-    } 
-    
+    }
+
+    // Если не разрешено, возвращаем deny
     return { action: "deny" };
   });
-  
 
-  mainWindow.webContents.on("will-navigate", (event, url) => {
+  mainWindow.webContents.on("will-navigate", async (event, url) => {
     if (url.includes("action=logout")) {
-      mainWindow.webContents.executeJavaScript("localStorage.setItem('isLoggedOut', 'true');");
+      mainWindow.webContents.executeJavaScript(
+        "localStorage.setItem('isLoggedOut', 'true');"
+      );
     }
   });
-  
+
+  ipcMain.on("middle-btn-blocked", (event) => {
+    console.log("Middle button blocked");
+  });
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
