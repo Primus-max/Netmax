@@ -59,7 +59,7 @@ function createWindow(options = {}) {
     },
   });
   
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
@@ -74,8 +74,7 @@ function createWindow(options = {}) {
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     const isExternalLink = /^https?:\/\//.test(url);
   
-    if (isExternalLink) {
-      // Получаем размеры основного экрана пользователя
+    if (isExternalLink) {      
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   
       return {
@@ -84,17 +83,16 @@ function createWindow(options = {}) {
           frame: true,
           resizable: true,
           maximizable: true,
-          width,  // ширина экрана
-          height, // высота экрана
+          width,  
+          height, 
           webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
           }
         }
       };
-    }
-  
-    // Блокируем создание нового окна для внутренних действий
+    } 
+    
     return { action: "deny" };
   });
   

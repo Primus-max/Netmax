@@ -14,6 +14,7 @@ const {
 const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
 const { saveLoginData } = require("./store/localStorageStore.js");
 const { createLoginDropdown } = require("./utils/htmlGeneratorUtils.js");
+const { createHeader } = require("./assets/tamplates/header.js");
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
@@ -65,6 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const closeButton = createCloseButton();
   const minimizeBtn = createMinimizeButton();
   const maximizeBtn = createMaximizeButton();
+  const header = createHeader();
 
   // Добавляем обработчик события для кнопки закрытия
   closeButton.addEventListener("click", () => {
@@ -79,6 +81,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   maximizeBtn.addEventListener("click", () => {
     ipcRenderer.send("window-resize");
   });
+
+  header.addEventListener("dragstart", (event) => {
+    event.preventDefault();
+  });
+
+  // Блокировка скролла по нажатию колёсика мыши
+  document.addEventListener(
+    "mousedown",
+    function (event) {
+      if (event.button === 1) {
+        let target = event.target;
+        while (target && target.tagName !== "A") {
+          target = target.parentElement;
+        }
+
+        if (target && target.tagName === "A") {
+          console.log("Средний клик по ссылке:", target.href);
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          return false;
+        }
+      }
+    },
+    true
+  );
 
   // Обработка нажатия правой кнопки мыши
   document.addEventListener("contextmenu", (event) => {
@@ -151,18 +180,19 @@ function checkAndToggleScrollBlock() {
   }
 }
 
-document.addEventListener(
-  "mousedown",
-  function (event) {
-    if (event.button === 1) {
-      // Нажата средняя кнопка мыши
-      let target = event.target;
-      if (target.tagName === "A") {
-        // Если это ссылка
-        console.log("Link clicked:", target.href);
-        event.preventDefault(); // Блокируем открытие ссылки
-      }
-    }
-  },
-  true
-);
+// document.addEventListener(
+//   "mousedown",
+//   function (event) {
+//     console.log("Link clicked:", event);
+//     if (event.button === 1) {
+//       // Нажата средняя кнопка мыши
+//       let target = event.target;
+//       if (target.tagName === "A") {
+//         // Если это ссылка
+//         console.log("Link clicked:", target.href);
+//         event.preventDefault(); // Блокируем открытие ссылки
+//       }
+//     }
+//   },
+//   true
+// );
