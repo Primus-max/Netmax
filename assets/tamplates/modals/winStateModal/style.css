@@ -1,0 +1,103 @@
+@font-face {
+    font-family: 'BrandFont';
+    src: url('../../../fonts/ofont.ru_Bebas\ Neue.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DescriptionFont';
+    src: url('../../../fonts/calibri.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#WinStateModal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #101010;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {    
+    padding: 20px;    
+    width: 70%;    
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* .image-grid img {
+    
+    border-radius: 5px;
+} */
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+}
+
+.image {  
+    width: 66%;  
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+}
+
+.image-description {
+    
+    margin-top: 10px;
+    padding: 0;
+    font-size: 24px;
+    line-height: normal;
+    color: #ffffff;
+    font-family: 'DescriptionFont', sans-serif;
+}
+
+.brand-name {    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'BrandFont', sans-serif;
+    justify-content: center;
+
+}
+
+.brand-name span {
+    margin: 0;
+    padding: 0;
+    line-height: 1; 
+}
+
+.brand-name span:first-child {
+    color: #7a0000;
+    font-size: 120px;
+}
+
+.brand-name span:last-child {
+    color: #ffffff;
+    font-size: 50px;
+    margin-top: -10px; 
+}

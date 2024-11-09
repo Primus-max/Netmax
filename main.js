@@ -75,26 +75,39 @@ if (!gotTheLock) {
     mainWindow.hide();
   });
 
-  let isResized = false;
-  let lastUrl = "";
-  
+
   ipcMain.on("window-resize", (event) => {
     if (!mainWindow) return;
-  
-    if (!isResized) {
-      mainWindow.setResizable(false);
-      mainWindow.setMaximizable(true);  
-      mainWindow.setFullScreen(false);  
-      lastUrl = mainWindow.webContents.getURL();
-      console.log("Switched to windowed mode:", lastUrl);
-    } else {
-      mainWindow.setFullScreen(true);   
-      mainWindow.setResizable(false);
-      mainWindow.setMaximizable(false);
-      console.log("Switched to fullscreen mode:", lastUrl);
+
+    if (!mainWindow.isFullScreen()) {
+        mainWindow.setFullScreen(true);
+        mainWindow.setResizable(false);
+        mainWindow.setMaximizable(false);
+        console.log("Switched to fullscreen mode:", mainWindow.webContents.getURL());
     }
   
-    isResized = !isResized;
-  });
+});
+
+
+  // let isResized = false;
+  // let lastUrl = "";
+  
+  // ipcMain.on("window-resize", (event) => {
+  //   if (!mainWindow) return;  
+    
+  //   if (!isResized) {
+  //     mainWindow.setResizable(false);
+  //     mainWindow.setMaximizable(true);  
+  //     mainWindow.setFullScreen(false);  
+  //     lastUrl = mainWindow.webContents.getURL();      
+  //   } else {
+  //     mainWindow.setFullScreen(true);   
+  //     mainWindow.setResizable(false);
+  //     mainWindow.setMaximizable(false);
+  //     console.log("Switched to fullscreen mode:", lastUrl);
+  //   }
+  
+  //   isResized = !isResized;
+  // });
   
 }
