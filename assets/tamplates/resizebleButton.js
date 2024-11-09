@@ -34,7 +34,7 @@ function createButton(id, rightPosition, imageName) {
 }
 
 function createMinimizeButton() {
-    return createButton("minimize-btn", 41, "minimize.png");
+    return createButton("minimize-btn", 41, "minimize.jpg");
 }
 
 function createMaximizeButton() {
