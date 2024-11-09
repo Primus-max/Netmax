@@ -82,7 +82,7 @@ function createWindow(options = {}) {
         action: "allow",
         overrideBrowserWindowOptions: {
           frame: true,
-          resizable: true,
+          resizable: false,
           maximizable: true,
           width,
           height,

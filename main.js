@@ -82,7 +82,7 @@ if (!gotTheLock) {
     if (!mainWindow) return;
   
     if (!isResized) {
-      mainWindow.setResizable(true);
+      mainWindow.setResizable(false);
       mainWindow.setMaximizable(true);  
       mainWindow.setFullScreen(false);  
       lastUrl = mainWindow.webContents.getURL();
