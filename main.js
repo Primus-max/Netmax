@@ -3,6 +3,7 @@ const path = require("path");
 const setupAutoUpdater = require("./autoUpdater.js");
 const setupTray = require("./tray.js");
 const createWindow = require("./window.js");
+const { screen } = require("electron");
 
 // Глобальная переменная для хранения ссылки на главное окно
 let mainWindow;
@@ -75,39 +76,77 @@ if (!gotTheLock) {
     mainWindow.hide();
   });
 
-
   ipcMain.on("window-resize", (event) => {
     if (!mainWindow) return;
 
     if (!mainWindow.isFullScreen()) {
-        mainWindow.setFullScreen(true);
-        mainWindow.setResizable(false);
-        mainWindow.setMaximizable(false);
-        console.log("Switched to fullscreen mode:", mainWindow.webContents.getURL());
+      mainWindow.setFullScreen(true);
+      mainWindow.setResizable(false);
+      mainWindow.setMaximizable(false);
+      console.log(
+        "Switched to fullscreen mode:",
+        mainWindow.webContents.getURL()
+      );
     }
-  
-});
+  });
 
+  // 1.
+  ipcMain.on("open-borderless-draggable-window", (event) => {
+    if (mainWindow) {
+      mainWindow.setFullScreen(false); // Отключаем полноэкранный режим
+      mainWindow.setMovable(true); // Включаем возможность перетаскивания
+      mainWindow.setResizable(false); // Отключаем изменение размеров
+
+      // Получаем размер рабочего пространства (не включая панели задач)
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+      // Устанавливаем окно на весь экран
+      mainWindow.setBounds({
+        x: 0,
+        y: 0,
+        width,
+        height,
+      });
+
+      console.log("Окно стало перетаскиваемым и занимает весь экран.");
+    }
+  });
+
+  // 4
+  ipcMain.on("open-taskbar-borderless-window", (event) => {
+    if (mainWindow) {
+      mainWindow.setFullScreen(false); 
+      mainWindow.setMovable(true); 
+      mainWindow.setResizable(false); 
+
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+      mainWindow.setBounds({
+        x: 0,
+        y: 0,
+        width,
+        height,
+      });
+    }
+  });
 
   // let isResized = false;
   // let lastUrl = "";
-  
+
   // ipcMain.on("window-resize", (event) => {
-  //   if (!mainWindow) return;  
-    
+  //   if (!mainWindow) return;
+
   //   if (!isResized) {
   //     mainWindow.setResizable(false);
-  //     mainWindow.setMaximizable(true);  
-  //     mainWindow.setFullScreen(false);  
-  //     lastUrl = mainWindow.webContents.getURL();      
+  //     mainWindow.setMaximizable(true);
+  //     mainWindow.setFullScreen(false);
+  //     lastUrl = mainWindow.webContents.getURL();
   //   } else {
-  //     mainWindow.setFullScreen(true);   
+  //     mainWindow.setFullScreen(true);
   //     mainWindow.setResizable(false);
   //     mainWindow.setMaximizable(false);
   //     console.log("Switched to fullscreen mode:", lastUrl);
   //   }
-  
+
   //   isResized = !isResized;
   // });
-  
 }

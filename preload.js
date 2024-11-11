@@ -209,9 +209,7 @@ function loadWinStatesModal() {
   document.body.insertAdjacentHTML("beforeend", modalHtml);
 
   // Добавляем обработчик для закрытия модального окна
-  document.querySelector(".close-btn").addEventListener("click", () => {
-    document.getElementById("WinStateModal").style.display = "none";
-  });
+  document.querySelector(".close-btn").addEventListener("click", closeModalWinSet);
 
   // Массив с путями к изображениям
   const imageData = [
@@ -237,6 +235,85 @@ function loadWinStatesModal() {
       imageElement.alt = `Image ${index + 1}`;
     }
   });
+
+
+  // Добавляем обработчик для каждого изображения
+  imageElements.forEach((img, index) => {
+    img.addEventListener("click", () => {
+      openWindowAction(index + 1);
+    });
+  });
 }
 
+
+// Функция для обработки клика на каждом изображении
+function openWindowAction(imageNumber) {
+  switch (imageNumber) {
+      case 1:
+          openBorderlessDraggableWindow();
+          break;
+      case 2:
+          openBorderedDraggableWindow();
+          break;
+      case 3:
+          openTaskbarDraggableWindow();
+          break;
+      case 4:
+          openTaskbarBorderlessWindow();
+          break;
+      case 5:
+          openFullscreenWindow();
+          break;
+      default:
+          console.log("Нет действия для этого изображения");
+  }
+}
+
+// Пример отдельных методов для разных окон
+function openBorderlessDraggableWindow() {
+  console.log("Открывается безрамочное окно с перетаскиванием за хедер");
+  ipcRenderer.send("open-borderless-draggable-window");
+  // Логика для открытия окна
+}
+
+function openBorderedDraggableWindow() {
+  console.log("Открывается окно с рамкой и перетаскиванием за хедер");
+  // Логика для открытия окна
+}
+
+function openTaskbarDraggableWindow() {
+  console.log("Открывается окно с рамкой, панелью задач и перетаскиванием за хедер");
+  // Логика для открытия окна
+}
+
+async function openTaskbarBorderlessWindow() {
+  await closeModalWinSet(); // Ждем завершения закрытия модального окна
+
+  // После завершения закрытия выполняем отправку события
+  setTimeout(() => {
+    ipcRenderer.send("open-taskbar-borderless-window");
+    console.log("Открывается безрамочное окно с панелью задач и перетаскиванием за хедер");
+  }, 200);
+}
+
+function openFullscreenWindow() {
+  console.log("Открывается стандартное полноэкранное окно без перетаскивания");
+  // Логика для открытия окна
+}
+
+function closeModalWinSet() {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("WinStateModal");
+
+    // Добавляем класс для плавного исчезновения
+    modal.classList.add("fade-out");
+
+    // Ждем окончания перехода и скрываем элемент
+    modal.addEventListener("transitionend", () => {
+      modal.style.display = "none";
+      modal.classList.remove("fade-out"); // Убираем класс для следующего открытия
+      resolve(); // Завершаем Promise после закрытия
+    }, { once: true });
+  });
+}
 
