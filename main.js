@@ -121,21 +121,25 @@ if (!gotTheLock) {
   // 2
   ipcMain.on("open-bordered-draggable-window", (event) => {
     if (mainWindow) {
-      mainWindow.setFullScreen(false);
-      mainWindow.setFullScreenable(false);
-      mainWindow.setResizable(false);
-      mainWindow.setMovable(true);
-      mainWindow.setMaximizable(false);
-      //mainWindow.setAlwaysOnTop(true, "screen-saver");
+      mainWindow.setFullScreen(false);                // Отключаем полноэкранный режим
+      mainWindow.setFullScreenable(false);             // Отключаем возможность включать полноэкранный режим
+      mainWindow.setResizable(false);                  // Отключаем изменение размера
+      mainWindow.setMovable(true);                     // Разрешаем перетаскивание
+      mainWindow.setMaximizable(false);                // Отключаем максимизацию
+      mainWindow.setAlwaysOnTop(true);                 // Окно всегда поверх других
+      mainWindow.setAlwaysOnTop(true, "screen-saver");
+  
       const { width, height } = screen.getPrimaryDisplay().size;
-
+  
+      // Устанавливаем размеры окна с учетом уменьшения на 5 пикселей с каждой стороны
       mainWindow.setBounds({
         x: 0,
         y: 0,
-        width: width - 1,
-        height: height - 1,
+        width: width - 5,  // Уменьшаем на 5 пикселей
+        height: height - 5, // Уменьшаем на 5 пикселей
       });
-
+  
+      // Добавляем рамку и перетаскивание
       setWindowWithBorder(mainWindow);
     }
   });
