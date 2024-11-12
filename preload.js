@@ -16,6 +16,9 @@ const { saveLoginData } = require("./store/localStorageStore.js");
 const { createLoginDropdown } = require("./utils/htmlGeneratorUtils.js");
 const { createHeader } = require("./assets/tamplates/header.js");
 
+const fs = require("fs");
+const path = require("path");
+
 contextBridge.exposeInMainWorld("api", {
   send: (channel, data) => ipcRenderer.send(channel, data),
   on: (channel, callback) => ipcRenderer.on(channel, callback),
@@ -58,10 +61,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }, 300);
 
-  checkAndToggleScrollBlock();
+  checkAndToggleScrollBlock(); // Проверка и применение блокировки скролла
 
-  // Сохранение авторизационных данных
-  trackLoginForm();
+  trackLoginForm(); // Сохранение авторизационных данных
+  loadWinStatesModal(); // Встраиваем модальное окно для выбора размера окна
 
   const closeButton = createCloseButton();
   const minimizeBtn = createMinimizeButton();
@@ -75,11 +78,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Добавляем обработчик события для кнопки изменения размера окна
   minimizeBtn.addEventListener("click", () => {
-    ipcRenderer.send("window-resize");
+    document.getElementById("WinStateModal").style.display = "flex";
   });
 
   maximizeBtn.addEventListener("click", () => {
-    ipcRenderer.send("window-resize");
+    ipcRenderer.send("window-fullscreen");
   });
 
   header.addEventListener("dragstart", (event) => {
@@ -142,8 +145,7 @@ function enableScrollBlock() {
 
   document.addEventListener("scroll", blockScroll, { passive: false });
   document.addEventListener("wheel", blockScroll, { passive: false });
-  document.addEventListener("keydown", handleKeydown, { passive: false });
-  console.log("Scroll block enabled");
+  document.addEventListener("keydown", handleKeydown, { passive: false });  
 }
 
 // Метод для деактивации блокировки скролла
@@ -179,19 +181,143 @@ function checkAndToggleScrollBlock() {
   }
 }
 
-// document.addEventListener(
-//   "mousedown",
-//   function (event) {
-//     console.log("Link clicked:", event);
-//     if (event.button === 1) {
-//       // Нажата средняя кнопка мыши
-//       let target = event.target;
-//       if (target.tagName === "A") {
-//         // Если это ссылка
-//         console.log("Link clicked:", target.href);
-//         event.preventDefault(); // Блокируем открытие ссылки
-//       }
-//     }
-//   },
-//   true
-// );
+function loadWinStatesModal() {
+  // Читаем HTML содержимое модального окна
+  const modalHtml = fs.readFileSync(
+    path.join(__dirname, "assets/tamplates/modals/winStateModal/modal.html"),
+    "utf8"
+  );
+
+  // Шрифты
+  const fontLink = document.createElement("link");
+  fontLink.rel = "stylesheet";
+  fontLink.href =
+    "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap";
+  document.head.appendChild(fontLink);
+
+  // Создаем и добавляем CSS для модального окна
+  const modalStyle = document.createElement("link");
+  modalStyle.rel = "stylesheet";
+  modalStyle.href = `file://${path.join(
+    __dirname,
+    "assets/tamplates/modals/winStateModal/style.css"
+  )}`;
+  document.head.appendChild(modalStyle);
+
+  // Вставляем HTML модального окна в конец <body>
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+  // Добавляем обработчик для закрытия модального окна
+  document.querySelector(".close-btn").addEventListener("click", closeModalWinSet);
+
+  // Массив с путями к изображениям
+  const imageData = [
+    "win_01.png",
+    "win_02.png",
+    "win_03.png",
+    "win_04.png",
+    "win_05.png",
+  ];
+
+  // Получаем все элементы с классом 'image', которые являются <img>
+  const imageElements = document.querySelectorAll(".image");
+
+  // Динамически заменяем изображения в каждом элементе
+  imageElements.forEach((imageElement, index) => {
+    if (imageData[index]) {
+      // Обновляем атрибуты src и alt для каждого изображения
+      imageElement.src = `file://${path.join(
+        __dirname,
+        "./assets/images/",
+        imageData[index]
+      )}`;
+      imageElement.alt = `Image ${index + 1}`;
+    }
+  });
+
+
+  // Добавляем обработчик для каждого изображения
+  imageElements.forEach((img, index) => {
+    img.addEventListener("click", () => {
+      openWindowAction(index + 1);
+    });
+  });
+}
+
+
+// Функция для обработки клика на каждом изображении
+function openWindowAction(imageNumber) {
+  switch (imageNumber) {
+      case 1:
+          openBorderlessDraggableWindow();
+          break;
+      case 2:
+          openBorderedDraggableWindow();
+          break;
+      case 3:
+          openTaskbarDraggableWindow();
+          break;
+      case 4:
+          openTaskbarBorderlessWindow();
+          break;
+      case 5:
+          openFullscreenWindow();
+          break;
+      default:
+          console.log("Нет действия для этого изображения");
+  }
+}
+
+// 1
+async function openBorderlessDraggableWindow() {   
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-borderless-draggable-window");  
+  }, 200);
+}
+
+// 2
+async function openBorderedDraggableWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-bordered-draggable-window");  
+  }, 200);
+}
+
+// 3
+async function openTaskbarDraggableWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-taskbar-draggable-window");    
+  }, 200);   
+}
+
+// 4
+async function openTaskbarBorderlessWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-taskbar-borderless-window");
+  }, 200);
+}
+
+// 5
+async function openFullscreenWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("window-fullscreen");  
+  }, 200);  
+}
+
+function closeModalWinSet() {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("WinStateModal");
+
+    modal.classList.add("fade-out");
+    modal.addEventListener("transitionend", () => {
+      modal.style.display = "none";
+      modal.classList.remove("fade-out"); 
+      resolve(); 
+    }, { once: true });
+  });
+}
+
