@@ -82,65 +82,70 @@ if (!gotTheLock) {
 
   ipcMain.on("window-fullscreen", (event) => {
     if (mainWindow) {
-        mainWindow.setKiosk(false);                    // Отключаем режим киоска для сброса состояния       
-        const { width, height } = screen.getPrimaryDisplay().size;
+      // mainWindow.setKiosk(false);                    // Отключаем режим киоска для сброса состояния
+      mainWindow.setAlwaysOnTop(false, "screen-saver");
+      const { width, height } = screen.getPrimaryDisplay().size;
 
-        // Сбрасываем отступы и возвращаем окно на полный экран
-        mainWindow.setBounds({ x: 0, y: 0, width, height });
+      // Сбрасываем отступы и возвращаем окно на полный экран
+      mainWindow.setBounds({ x: 0, y: 0, width, height });
 
-        mainWindow.setFullScreen(true);                // Принудительно включаем полноэкранный режим
-        mainWindow.setResizable(false);                // Снова отключаем изменение размеров
-        mainWindow.setMaximizable(false);              // Отключаем возможность максимизации
-        mainWindow.setAlwaysOnTop(false);              // Отключаем режим "всегда поверх" на случай, если он был установлен
+      mainWindow.setFullScreen(true); // Принудительно включаем полноэкранный режим
+      mainWindow.setResizable(false); // Снова отключаем изменение размеров
+      mainWindow.setMaximizable(false); // Отключаем возможность максимизации
+      mainWindow.setAlwaysOnTop(false); // Отключаем режим "всегда поверх" на случай, если он был установлен
 
-        setWindowWithoutBorder(mainWindow);            // Применяем стиль без рамки
-        console.log("Переключено в полноценный полноэкранный режим.");
+      setWindowWithoutBorder(mainWindow); // Применяем стиль без рамки
+      console.log("Переключено в полноценный полноэкранный режим.");
     }
-});
+  });
 
   // 1
   ipcMain.on("open-borderless-draggable-window", (event) => {
     if (mainWindow) {
       mainWindow.setFullScreen(false);
-      mainWindow.setFullScreenable(false);
-      mainWindow.setResizable(false);
-      mainWindow.setMovable(true);
-      mainWindow.setMaximizable(false);
-     mainWindow.setAlwaysOnTop(true, "screen-saver");
-     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-     mainWindow.setBounds({
-       x: 0,
-       y: 0,
-       width,
-       height,
-     });
-      setWindowWithoutBorder(mainWindow);
+      mainWindow.setKiosk(false);
+      mainWindow.setAlwaysOnTop(false);
+
+      setTimeout(() => {
+        mainWindow.setMovable(true);
+        mainWindow.setResizable(false);
+        mainWindow.setAlwaysOnTop(true, "screen-saver");
+
+        const { width, height } = screen.getPrimaryDisplay().size;
+        mainWindow.setBounds({
+          x: 0,
+          y: 0,
+          width: width - 1,
+          height: height - 1,
+        });
+
+        setWindowWithoutBorder(mainWindow);
+      }, 100);
     }
   });
 
   // 2
   ipcMain.on("open-bordered-draggable-window", (event) => {
     if (mainWindow) {
-      mainWindow.setFullScreen(false);                // Отключаем полноэкранный режим
-      mainWindow.setFullScreenable(false);             // Отключаем возможность включать полноэкранный режим
-      mainWindow.setResizable(false);                  // Отключаем изменение размера
-      mainWindow.setMovable(true);                     // Разрешаем перетаскивание
-      mainWindow.setMaximizable(false);                // Отключаем максимизацию
-      mainWindow.setAlwaysOnTop(true);                 // Окно всегда поверх других
-      mainWindow.setAlwaysOnTop(true, "screen-saver");
-  
-      const { width, height } = screen.getPrimaryDisplay().size;
-  
-      // Устанавливаем размеры окна с учетом уменьшения на 5 пикселей с каждой стороны
-      mainWindow.setBounds({
-        x: 0,
-        y: 0,
-        width: width - 5,  // Уменьшаем на 5 пикселей
-        height: height - 5, // Уменьшаем на 5 пикселей
-      });
-  
-      // Добавляем рамку и перетаскивание
-      setWindowWithBorder(mainWindow);
+      mainWindow.setFullScreen(false);
+      mainWindow.setKiosk(false);
+      mainWindow.setAlwaysOnTop(false);
+
+      setTimeout(() => {
+        mainWindow.setMovable(true);
+        mainWindow.setResizable(false);
+        mainWindow.setAlwaysOnTop(true, "screen-saver");
+
+        const { width, height } = screen.getPrimaryDisplay().size;
+        mainWindow.setBounds({
+          x: 0,
+          y: 0,
+          width: width - 1,
+          height: height - 1,
+        });
+
+        setWindowWithBorder(mainWindow);
+      }, 100);
     }
   });
 
