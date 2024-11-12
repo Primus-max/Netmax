@@ -5,6 +5,7 @@ let mainWindow = null;
 let splash = null;
 let isLoggedOut = false;
 
+
 // Параметры по умолчанию
 const defaultWindowOptions = {
   fullscreen: true,

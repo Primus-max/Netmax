@@ -82,20 +82,19 @@ if (!gotTheLock) {
 
   ipcMain.on("window-fullscreen", (event) => {
     if (mainWindow) {
-      // mainWindow.setKiosk(false);                    // Отключаем режим киоска для сброса состояния
+      // mainWindow.setKiosk(false);                    
       mainWindow.setAlwaysOnTop(false, "screen-saver");
       const { width, height } = screen.getPrimaryDisplay().size;
 
-      // Сбрасываем отступы и возвращаем окно на полный экран
+      
       mainWindow.setBounds({ x: 0, y: 0, width, height });
 
-      mainWindow.setFullScreen(true); // Принудительно включаем полноэкранный режим
-      mainWindow.setResizable(false); // Снова отключаем изменение размеров
-      mainWindow.setMaximizable(false); // Отключаем возможность максимизации
-      mainWindow.setAlwaysOnTop(false); // Отключаем режим "всегда поверх" на случай, если он был установлен
+      mainWindow.setFullScreen(true);
+      mainWindow.setResizable(false);
+      mainWindow.setMaximizable(false);
+      mainWindow.setAlwaysOnTop(false);
 
-      setWindowWithoutBorder(mainWindow); // Применяем стиль без рамки
-      console.log("Переключено в полноценный полноэкранный режим.");
+      setWindowWithoutBorder(mainWindow);      
     }
   });
 
