@@ -4,6 +4,10 @@ const setupAutoUpdater = require("./autoUpdater.js");
 const setupTray = require("./tray.js");
 const createWindow = require("./window.js");
 const { screen } = require("electron");
+const {
+  setWindowWithBorder,
+  setWindowWithoutBorder,
+} = require("./assets/tamplates/border.js");
 
 // Глобальная переменная для хранения ссылки на главное окно
 let mainWindow;
@@ -76,48 +80,89 @@ if (!gotTheLock) {
     mainWindow.hide();
   });
 
-  ipcMain.on("window-resize", (event) => {
-    if (!mainWindow) return;
+  ipcMain.on("window-fullscreen", (event) => {
+    if (mainWindow) {
+        mainWindow.setKiosk(false);                    // Отключаем режим киоска для сброса состояния       
+        const { width, height } = screen.getPrimaryDisplay().size;
 
-    if (!mainWindow.isFullScreen()) {
-      mainWindow.setFullScreen(true);
+        // Сбрасываем отступы и возвращаем окно на полный экран
+        mainWindow.setBounds({ x: 0, y: 0, width, height });
+
+        mainWindow.setFullScreen(true);                // Принудительно включаем полноэкранный режим
+        mainWindow.setResizable(false);                // Снова отключаем изменение размеров
+        mainWindow.setMaximizable(false);              // Отключаем возможность максимизации
+        mainWindow.setAlwaysOnTop(false);              // Отключаем режим "всегда поверх" на случай, если он был установлен
+
+        setWindowWithoutBorder(mainWindow);            // Применяем стиль без рамки
+        console.log("Переключено в полноценный полноэкранный режим.");
+    }
+});
+
+  // 1
+  ipcMain.on("open-borderless-draggable-window", (event) => {
+    if (mainWindow) {
+      mainWindow.setFullScreen(false);
+      mainWindow.setFullScreenable(false);
       mainWindow.setResizable(false);
+      mainWindow.setMovable(true);
       mainWindow.setMaximizable(false);
-      console.log(
-        "Switched to fullscreen mode:",
-        mainWindow.webContents.getURL()
-      );
+     mainWindow.setAlwaysOnTop(true, "screen-saver");
+     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+     mainWindow.setBounds({
+       x: 0,
+       y: 0,
+       width,
+       height,
+     });
+      setWindowWithoutBorder(mainWindow);
     }
   });
 
-  // 1.
-  ipcMain.on("open-borderless-draggable-window", (event) => {
+  // 2
+  ipcMain.on("open-bordered-draggable-window", (event) => {
     if (mainWindow) {
-      mainWindow.setFullScreen(false); // Отключаем полноэкранный режим
-      mainWindow.setMovable(true); // Включаем возможность перетаскивания
-      mainWindow.setResizable(false); // Отключаем изменение размеров
+      mainWindow.setFullScreen(false);
+      mainWindow.setFullScreenable(false);
+      mainWindow.setResizable(false);
+      mainWindow.setMovable(true);
+      mainWindow.setMaximizable(false);
+      //mainWindow.setAlwaysOnTop(true, "screen-saver");
+      const { width, height } = screen.getPrimaryDisplay().size;
 
-      // Получаем размер рабочего пространства (не включая панели задач)
+      mainWindow.setBounds({
+        x: 0,
+        y: 0,
+        width: width - 1,
+        height: height - 1,
+      });
+
+      setWindowWithBorder(mainWindow);
+    }
+  });
+
+  // 3
+  ipcMain.on("open-taskbar-draggable-window", (event) => {
+    if (mainWindow) {
+      mainWindow.setFullScreen(false);
+      mainWindow.setMovable(true);
+      mainWindow.setResizable(false);
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-
-      // Устанавливаем окно на весь экран
       mainWindow.setBounds({
         x: 0,
         y: 0,
         width,
         height,
       });
-
-      console.log("Окно стало перетаскиваемым и занимает весь экран.");
+      setWindowWithBorder(mainWindow);
     }
   });
 
   // 4
   ipcMain.on("open-taskbar-borderless-window", (event) => {
     if (mainWindow) {
-      mainWindow.setFullScreen(false); 
-      mainWindow.setMovable(true); 
-      mainWindow.setResizable(false); 
+      mainWindow.setFullScreen(false);
+      mainWindow.setMovable(true);
+      mainWindow.setResizable(false);
 
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
       mainWindow.setBounds({

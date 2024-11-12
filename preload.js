@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   maximizeBtn.addEventListener("click", () => {
-    ipcRenderer.send("window-resize");
+    ipcRenderer.send("window-fullscreen");
   });
 
   header.addEventListener("dragstart", (event) => {
@@ -145,8 +145,7 @@ function enableScrollBlock() {
 
   document.addEventListener("scroll", blockScroll, { passive: false });
   document.addEventListener("wheel", blockScroll, { passive: false });
-  document.addEventListener("keydown", handleKeydown, { passive: false });
-  console.log("Scroll block enabled");
+  document.addEventListener("keydown", handleKeydown, { passive: false });  
 }
 
 // Метод для деактивации блокировки скролла
@@ -269,50 +268,55 @@ function openWindowAction(imageNumber) {
   }
 }
 
-// Пример отдельных методов для разных окон
-function openBorderlessDraggableWindow() {
-  console.log("Открывается безрамочное окно с перетаскиванием за хедер");
-  ipcRenderer.send("open-borderless-draggable-window");
-  // Логика для открытия окна
-}
-
-function openBorderedDraggableWindow() {
-  console.log("Открывается окно с рамкой и перетаскиванием за хедер");
-  // Логика для открытия окна
-}
-
-function openTaskbarDraggableWindow() {
-  console.log("Открывается окно с рамкой, панелью задач и перетаскиванием за хедер");
-  // Логика для открытия окна
-}
-
-async function openTaskbarBorderlessWindow() {
-  await closeModalWinSet(); // Ждем завершения закрытия модального окна
-
-  // После завершения закрытия выполняем отправку события
+// 1
+async function openBorderlessDraggableWindow() {   
+  await closeModalWinSet();   
   setTimeout(() => {
-    ipcRenderer.send("open-taskbar-borderless-window");
-    console.log("Открывается безрамочное окно с панелью задач и перетаскиванием за хедер");
+    ipcRenderer.send("open-borderless-draggable-window");  
   }, 200);
 }
 
-function openFullscreenWindow() {
-  console.log("Открывается стандартное полноэкранное окно без перетаскивания");
-  // Логика для открытия окна
+// 2
+async function openBorderedDraggableWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-bordered-draggable-window");  
+  }, 200);
+}
+
+// 3
+async function openTaskbarDraggableWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-taskbar-draggable-window");    
+  }, 200);   
+}
+
+// 4
+async function openTaskbarBorderlessWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("open-taskbar-borderless-window");
+  }, 200);
+}
+
+// 5
+async function openFullscreenWindow() {
+  await closeModalWinSet();   
+  setTimeout(() => {
+    ipcRenderer.send("window-fullscreen");  
+  }, 200);  
 }
 
 function closeModalWinSet() {
   return new Promise((resolve) => {
     const modal = document.getElementById("WinStateModal");
 
-    // Добавляем класс для плавного исчезновения
     modal.classList.add("fade-out");
-
-    // Ждем окончания перехода и скрываем элемент
     modal.addEventListener("transitionend", () => {
       modal.style.display = "none";
-      modal.classList.remove("fade-out"); // Убираем класс для следующего открытия
-      resolve(); // Завершаем Promise после закрытия
+      modal.classList.remove("fade-out"); 
+      resolve(); 
     }, { once: true });
   });
 }

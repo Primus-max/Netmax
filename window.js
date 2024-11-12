@@ -44,6 +44,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
+    setAlwaysOnTop: true,
     backgroundColor: "#9a9a9a",
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
