@@ -1,6 +1,6 @@
 {
   "name": "Netmax",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "App for NETMAX",
   "main": "main.js",
   "scripts": {
