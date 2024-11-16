@@ -102,7 +102,7 @@ if (!gotTheLock) {
   // 1
   ipcMain.on("open-borderless-draggable-window", (event) => {
     if (mainWindow) {
-      mainWindow.reload();
+      setTimeout(() => {mainWindow.reload();}, 100);      
       mainWindow.setFullScreen(false);
       mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false);

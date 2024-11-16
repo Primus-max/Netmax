@@ -1,9 +1,7 @@
 function handleMouseMoveUpdate() {
     window.addEventListener("mousedown", (event) => {                
-      if (event.button === 4) {    
-        console.log('reload page');        
-        // event.preventDefault(); 
-        // history.pushState(null, "", location.href); 
+      if (event.button === 4) {                 
+        console.log('update page');
         location.reload();
       }
     });

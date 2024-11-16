@@ -53,8 +53,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
-    setAlwaysOnTop: true,
-    backgroundColor: "#9a9a9a",
+    setAlwaysOnTop: true,   
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
@@ -69,15 +68,14 @@ function createWindow(options = {}) {
     },
   });
 
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
     const currentUrl = mainWindow.webContents.getURL();
-    if (currentUrl === "https://netmax.network/menu/") {
-      // Уничтожаем splash только если мы на нужной странице
+    if (currentUrl === "https://netmax.network/menu/") {      
       splash.destroy();
       mainWindow.show();
     }
@@ -119,28 +117,37 @@ function createWindow(options = {}) {
       );
     }
   });
+  
+
+  let eventTimeout;
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (isMiddleBtnBlocked) {      
       return { action: "deny" }; 
     }
   
-    
     if (url.includes("specific-condition")) {
       return { action: "deny" };
     }
   
-    
     return { action: "allow" };
   });
   
   ipcMain.on("middle-btn-blocked", (event) => {
+    if (isMiddleBtnBlocked) {
+      return; 
+    }
+  
     isMiddleBtnBlocked = true; 
     console.log("Middle button blocked:", isMiddleBtnBlocked);
-    setTimeout(() => {
+  
+    clearTimeout(eventTimeout); 
+    eventTimeout = setTimeout(() => { 
       isMiddleBtnBlocked = false;
+      console.log("Middle button unblocked:", isMiddleBtnBlocked);
     }, 1000); 
   });
+  
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
