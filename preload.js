@@ -83,11 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   maximizeBtn.addEventListener("click", () => {
     ipcRenderer.send("window-fullscreen");
-  });
-
-  header.addEventListener("dragstart", (event) => {
-    event.preventDefault();
-  });
+  }); 
 
   // Блокировка скролла по нажатию колёсика мыши
   document.addEventListener(
@@ -145,7 +141,7 @@ function enableScrollBlock() {
 
   document.addEventListener("scroll", blockScroll, { passive: false });
   document.addEventListener("wheel", blockScroll, { passive: false });
-  document.addEventListener("keydown", handleKeydown, { passive: false });  
+  document.addEventListener("keydown", handleKeydown, { passive: false });
 }
 
 // Метод для деактивации блокировки скролла
@@ -208,7 +204,9 @@ function loadWinStatesModal() {
   document.body.insertAdjacentHTML("beforeend", modalHtml);
 
   // Добавляем обработчик для закрытия модального окна
-  document.querySelector(".close-btn").addEventListener("click", closeModalWinSet);
+  document
+    .querySelector(".close-btn")
+    .addEventListener("click", closeModalWinSet);
 
   // Массив с путями к изображениям
   const imageData = [
@@ -235,7 +233,6 @@ function loadWinStatesModal() {
     }
   });
 
-
   // Добавляем обработчик для каждого изображения
   imageElements.forEach((img, index) => {
     img.addEventListener("click", () => {
@@ -244,57 +241,56 @@ function loadWinStatesModal() {
   });
 }
 
-
 // Функция для обработки клика на каждом изображении
 function openWindowAction(imageNumber) {
   switch (imageNumber) {
-      case 1:
-          openBorderlessDraggableWindow();
-          break;
-      case 2:
-          openBorderedDraggableWindow();
-          break;
-      case 3:
-          openTaskbarDraggableWindow();
-          break;
-      case 4:
-          openTaskbarBorderlessWindow();
-          break;
-      case 5:
-          openFullscreenWindow();
-          break;
-      default:
-          console.log("Нет действия для этого изображения");
+    case 1:
+      openBorderlessDraggableWindow();
+      break;
+    case 2:
+      openBorderedDraggableWindow();
+      break;
+    case 3:
+      openTaskbarDraggableWindow();
+      break;
+    case 4:
+      openTaskbarBorderlessWindow();
+      break;
+    case 5:
+      openFullscreenWindow();
+      break;
+    default:
+      console.log("Нет действия для этого изображения");
   }
 }
 
 // 1
-async function openBorderlessDraggableWindow() {   
-  await closeModalWinSet();   
+async function openBorderlessDraggableWindow() {
+  await closeModalWinSet();
   setTimeout(() => {
-    ipcRenderer.send("open-borderless-draggable-window");  
+    ipcRenderer.send("open-borderless-draggable-window");
   }, 200);
 }
 
 // 2
 async function openBorderedDraggableWindow() {
-  await closeModalWinSet();   
+  await closeModalWinSet();
   setTimeout(() => {
-    ipcRenderer.send("open-bordered-draggable-window");  
+    ipcRenderer.send("open-bordered-draggable-window");
   }, 200);
 }
 
 // 3
 async function openTaskbarDraggableWindow() {
-  await closeModalWinSet();   
+  await closeModalWinSet();
   setTimeout(() => {
-    ipcRenderer.send("open-taskbar-draggable-window");    
-  }, 200);   
+    ipcRenderer.send("open-taskbar-draggable-window");
+  }, 200);
 }
 
 // 4
 async function openTaskbarBorderlessWindow() {
-  await closeModalWinSet();   
+  await closeModalWinSet();
   setTimeout(() => {
     ipcRenderer.send("open-taskbar-borderless-window");
   }, 200);
@@ -302,10 +298,10 @@ async function openTaskbarBorderlessWindow() {
 
 // 5
 async function openFullscreenWindow() {
-  await closeModalWinSet();   
+  await closeModalWinSet();
   setTimeout(() => {
-    ipcRenderer.send("window-fullscreen");  
-  }, 200);  
+    ipcRenderer.send("window-fullscreen");
+  }, 200);
 }
 
 function closeModalWinSet() {
@@ -313,11 +309,14 @@ function closeModalWinSet() {
     const modal = document.getElementById("WinStateModal");
 
     modal.classList.add("fade-out");
-    modal.addEventListener("transitionend", () => {
-      modal.style.display = "none";
-      modal.classList.remove("fade-out"); 
-      resolve(); 
-    }, { once: true });
+    modal.addEventListener(
+      "transitionend",
+      () => {
+        modal.style.display = "none";
+        modal.classList.remove("fade-out");
+        resolve();
+      },
+      { once: true }
+    );
   });
 }
-

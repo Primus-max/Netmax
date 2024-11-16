@@ -94,13 +94,15 @@ if (!gotTheLock) {
       mainWindow.setMaximizable(false);
       mainWindow.setAlwaysOnTop(false);
 
-      setWindowWithoutBorder(mainWindow);      
+      setWindowWithoutBorder(mainWindow);    
+      mainWindow.reload();  
     }
   });
 
   // 1
   ipcMain.on("open-borderless-draggable-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
       mainWindow.setFullScreen(false);
       mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false);
@@ -119,6 +121,7 @@ if (!gotTheLock) {
         });
 
         setWindowWithoutBorder(mainWindow);
+        mainWindow.reload();
       }, 100);
     }
   });
@@ -126,6 +129,8 @@ if (!gotTheLock) {
   // 2
   ipcMain.on("open-bordered-draggable-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
+
       mainWindow.setFullScreen(false);
       mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false);
@@ -151,6 +156,7 @@ if (!gotTheLock) {
   // 3
   ipcMain.on("open-taskbar-draggable-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
       mainWindow.setFullScreen(false);
       mainWindow.setMovable(true);
       mainWindow.setResizable(false);
@@ -161,13 +167,14 @@ if (!gotTheLock) {
         width,
         height,
       });
-      setWindowWithBorder(mainWindow);
+      setWindowWithBorder(mainWindow);      
     }
   });
 
   // 4
   ipcMain.on("open-taskbar-borderless-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
       mainWindow.setFullScreen(false);
       mainWindow.setMovable(true);
       mainWindow.setResizable(false);
@@ -178,7 +185,7 @@ if (!gotTheLock) {
         y: -2,
         width: width + 5,
         height: height + 5,
-      });
+      });      
     }
   });
 

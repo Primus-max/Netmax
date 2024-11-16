@@ -75,11 +75,14 @@ function createWindow(options = {}) {
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
-    setTimeout(() => {
+    const currentUrl = mainWindow.webContents.getURL();
+    if (currentUrl === "https://netmax.network/menu/") {
+      // Уничтожаем splash только если мы на нужной странице
       splash.destroy();
       mainWindow.show();
-    }, 2000);
+    }
   });
+  
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     const isExternalLink = /^https?:\/\//.test(url);
