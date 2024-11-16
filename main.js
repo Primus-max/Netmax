@@ -174,10 +174,10 @@ if (!gotTheLock) {
 
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
       mainWindow.setBounds({
-        x: 0,
-        y: 0,
-        width,
-        height,
+        x: -2,
+        y: -2,
+        width: width + 5,
+        height: height + 5,
       });
     }
   });
