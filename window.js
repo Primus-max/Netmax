@@ -108,7 +108,8 @@ function createWindow(options = {}) {
     return { action: "deny" };
   });
 
-  mainWindow.webContents.on("will-navigate", async (event, url) => {
+  mainWindow.webContents.on("will-navigate", async (event, url) => {    
+    if(isMiddleBtnBlocked)  event.preventDefault();
     if (url.includes("action=logout")) {
       mainWindow.webContents.executeJavaScript(
         "localStorage.setItem('isLoggedOut', 'true');"
@@ -116,8 +117,26 @@ function createWindow(options = {}) {
     }
   });
 
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (isMiddleBtnBlocked) {      
+      return { action: "deny" }; 
+    }
+  
+    
+    if (url.includes("specific-condition")) {
+      return { action: "deny" };
+    }
+  
+    
+    return { action: "allow" };
+  });
+  
   ipcMain.on("middle-btn-blocked", (event) => {
     isMiddleBtnBlocked = true; 
+    console.log("Middle button blocked:", isMiddleBtnBlocked);
+    setTimeout(() => {
+      isMiddleBtnBlocked = false;
+    }, 1000); 
   });
 
   ipcMain.on("close-window", (event) => {

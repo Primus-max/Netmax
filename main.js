@@ -112,10 +112,10 @@ if (!gotTheLock) {
 
         const { width, height } = screen.getPrimaryDisplay().size;
         mainWindow.setBounds({
-          x: 0,
-          y: 0,
-          width: width - 0.1,
-          height: height - 0.1,
+          x: -1,
+          y: -1,
+          width: width + 5,
+          height: height + 5,
         });
 
         setWindowWithoutBorder(mainWindow);
