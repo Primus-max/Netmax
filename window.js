@@ -6,6 +6,9 @@ let splash = null;
 let isLoggedOut = false;
 let isMiddleBtnBlocked = false;
 
+app.commandLine.appendSwitch('high-dpi-support', '1');
+app.commandLine.appendSwitch('force-device-scale-factor', '1');
+
 // Параметры по умолчанию
 const defaultWindowOptions = {
   fullscreen: true,
@@ -14,8 +17,6 @@ const defaultWindowOptions = {
 };
 
 function createWindow(options = {}) {
-
-
   if (isMiddleBtnBlocked) {
     console.log("Middle button blocked, window will not be created.");
     isMiddleBtnBlocked = false;
@@ -53,7 +54,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
-    setAlwaysOnTop: true,   
+    setAlwaysOnTop: true,
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
@@ -61,6 +62,8 @@ function createWindow(options = {}) {
       preload: preloadPath,
       enableRemoteModule: true,
       webSecurity: false,
+      zoomFactor: 1,
+      disableBlinkFeatures: "Autofill",
     },
     webContents: {
       backgroundThrottling: false,
@@ -68,19 +71,25 @@ function createWindow(options = {}) {
     },
   });
 
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
     const currentUrl = mainWindow.webContents.getURL();
-    if (currentUrl === "https://netmax.network/menu/") {      
+    if (currentUrl === "https://netmax.network/menu/") {
       splash.destroy();
       mainWindow.show();
-    }
+
+      mainWindow.webContents.executeJavaScript(`
+        const metaTag = document.createElement('meta');
+        metaTag.name = 'viewport';
+        metaTag.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+        document.head.appendChild(metaTag);
+      `);
+    }  
   });
-  
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     const isExternalLink = /^https?:\/\//.test(url);
@@ -109,45 +118,43 @@ function createWindow(options = {}) {
     return { action: "deny" };
   });
 
-  mainWindow.webContents.on("will-navigate", async (event, url) => {    
-    if(isMiddleBtnBlocked)  event.preventDefault();
+  mainWindow.webContents.on("will-navigate", async (event, url) => {
+    if (isMiddleBtnBlocked) event.preventDefault();
     if (url.includes("action=logout")) {
       mainWindow.webContents.executeJavaScript(
         "localStorage.setItem('isLoggedOut', 'true');"
       );
     }
   });
-  
 
   let eventTimeout;
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (isMiddleBtnBlocked) {      
-      return { action: "deny" }; 
+    if (isMiddleBtnBlocked) {
+      return { action: "deny" };
     }
-  
+
     if (url.includes("specific-condition")) {
       return { action: "deny" };
     }
-  
+
     return { action: "allow" };
   });
-  
+
   ipcMain.on("middle-btn-blocked", (event) => {
     if (isMiddleBtnBlocked) {
-      return; 
+      return;
     }
-  
-    isMiddleBtnBlocked = true; 
+
+    isMiddleBtnBlocked = true;
     console.log("Middle button blocked:", isMiddleBtnBlocked);
-  
-    clearTimeout(eventTimeout); 
-    eventTimeout = setTimeout(() => { 
+
+    clearTimeout(eventTimeout);
+    eventTimeout = setTimeout(() => {
       isMiddleBtnBlocked = false;
       console.log("Middle button unblocked:", isMiddleBtnBlocked);
-    }, 1000); 
+    }, 1000);
   });
-  
 
   ipcMain.on("close-window", (event) => {
     event.preventDefault();
