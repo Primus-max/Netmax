@@ -14,7 +14,7 @@
 
 #WinStateModal {
     position: fixed;
-    z-index: 99999;
+    z-index: 8888888;
     left: 0;
     top: 0;
     width: 100%;
@@ -49,6 +49,8 @@
     right: 20px;
     font-size: 24px;
     cursor: pointer;
+    z-index: 99999;
+    color: #fff;
 }
 
 .image-grid {

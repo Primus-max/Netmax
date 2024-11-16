@@ -4,7 +4,7 @@ const path = require("path");
 let mainWindow = null;
 let splash = null;
 let isLoggedOut = false;
-
+let isMiddleBtnBlocked = false;
 
 // Параметры по умолчанию
 const defaultWindowOptions = {
@@ -14,6 +14,14 @@ const defaultWindowOptions = {
 };
 
 function createWindow(options = {}) {
+
+
+  if (isMiddleBtnBlocked) {
+    console.log("Middle button blocked, window will not be created.");
+    isMiddleBtnBlocked = false;
+    return null;
+  }
+
   const preloadPath = path.resolve(__dirname, "preload.js");
 
   // Объединяем переданные параметры с параметрами по умолчанию
@@ -109,7 +117,7 @@ function createWindow(options = {}) {
   });
 
   ipcMain.on("middle-btn-blocked", (event) => {
-    console.log("Middle button blocked");
+    isMiddleBtnBlocked = true; 
   });
 
   ipcMain.on("close-window", (event) => {
