@@ -82,19 +82,19 @@ if (!gotTheLock) {
 
   ipcMain.on("window-fullscreen", (event) => {
     if (mainWindow) {
-      // mainWindow.setKiosk(false);                    
-      mainWindow.setAlwaysOnTop(false, "screen-saver");
-      const { width, height } = screen.getPrimaryDisplay().size;
+      // // mainWindow.setKiosk(false);                    
+      // mainWindow.setAlwaysOnTop(false, "screen-saver");
+      // const { width, height } = screen.getPrimaryDisplay().size;
 
       
-      mainWindow.setBounds({ x: 0, y: 0, width, height });
+      // mainWindow.setBounds({ x: 0, y: 0, width, height });
 
-      mainWindow.setFullScreen(true);
-      mainWindow.setResizable(false);
-      mainWindow.setMaximizable(false);
-      mainWindow.setAlwaysOnTop(false);
+      // mainWindow.setFullScreen(true);
+      // mainWindow.setResizable(false);
+      // mainWindow.setMaximizable(false);
+      // mainWindow.setAlwaysOnTop(false);
 
-      setWindowWithoutBorder(mainWindow);    
+      // setWindowWithoutBorder(mainWindow);    
       mainWindow.reload();  
     }
   });

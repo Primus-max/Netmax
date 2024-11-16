@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Обновления страницы по боковой клавише
-  handleMouseMoveUpdate();
+  //handleMouseMoveUpdate();
 });
 
 // TODO вынести все методы в утилиты

@@ -54,7 +54,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
-    setAlwaysOnTop: true,
+    //setAlwaysOnTop: true,
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
