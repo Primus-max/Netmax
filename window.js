@@ -76,11 +76,26 @@ function createWindow(options = {}) {
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
 
+  mainWindow.webContents.on("did-navigate", (event, url) => {
+    if (url === "https://netmax.network/menu/") {
+      if (splash) {
+        splash.destroy(); // Закрываем заставку
+        splash = null;
+      }
+      mainWindow.show(); // Показываем главное окно
+    }
+  });
+
   mainWindow.webContents.on("did-finish-load", () => {
     const currentUrl = mainWindow.webContents.getURL();
     if (currentUrl === "https://netmax.network/menu/") {
-      splash.destroy();
-      mainWindow.show();
+      // setTimeout(() => {
+      //   if (splash) {
+      //     splash.destroy();
+      //     splash = null;
+      //     mainWindow.show();
+      //   }
+      // }, 5000);
 
       mainWindow.webContents.executeJavaScript(`
         const metaTag = document.createElement('meta');
@@ -146,13 +161,11 @@ function createWindow(options = {}) {
       return;
     }
 
-    isMiddleBtnBlocked = true;
-    console.log("Middle button blocked:", isMiddleBtnBlocked);
+    isMiddleBtnBlocked = true;    
 
     clearTimeout(eventTimeout);
     eventTimeout = setTimeout(() => {
-      isMiddleBtnBlocked = false;
-      console.log("Middle button unblocked:", isMiddleBtnBlocked);
+      isMiddleBtnBlocked = false;      
     }, 1000);
   });
 
