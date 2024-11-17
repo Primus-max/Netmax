@@ -3,6 +3,11 @@ const path = require("path");
 const setupAutoUpdater = require("./autoUpdater.js");
 const setupTray = require("./tray.js");
 const createWindow = require("./window.js");
+const { screen } = require("electron");
+const {
+  setWindowWithBorder,
+  setWindowWithoutBorder,
+} = require("./assets/tamplates/border.js");
 
 // Глобальная переменная для хранения ссылки на главное окно
 let mainWindow;
@@ -20,7 +25,6 @@ function initializeMainWindow() {
     mainWindow = createWindow(options);
     setupTray(mainWindow);
     setupAutoUpdater();
-    
   } catch (error) {
     console.error("Error during app initialization:", error);
   }
@@ -76,29 +80,133 @@ if (!gotTheLock) {
     mainWindow.hide();
   });
 
-  let isResized = false;
-  let lastUrl = "";
-  ipcMain.on("window-resize", (event) => {
-    if (!mainWindow) return;
+  ipcMain.on("window-fullscreen", (event) => {
+    if (mainWindow) {
+      // // mainWindow.setKiosk(false);                    
+      mainWindow.setAlwaysOnTop(false, "screen-saver");
+      const { width, height } = screen.getPrimaryDisplay().size;
 
-    if (!isResized) {
-      mainWindow.setResizable(true);
+      
+      mainWindow.setBounds({ x: 0, y: 0, width, height });
+
+      mainWindow.setFullScreen(true);
+      mainWindow.setResizable(false);
       mainWindow.setMaximizable(false);
-      mainWindow.setFullScreen(false);
-      lastUrl = mainWindow.webContents.getURL();
-      console.log("lastUrl", lastUrl);
-    } else {
-      const options = {
-        fullscreen: true,
-        resizable: false,
-        maximizable: false,
-      };
+      mainWindow.setAlwaysOnTop(false);
 
-      mainWindow.close();
-      mainWindow = createWindow(options);
-      mainWindow.loadURL(lastUrl);
+      setWindowWithoutBorder(mainWindow);    
+      mainWindow.reload();  
     }
-
-    isResized = !isResized;
   });
+
+  // 1
+  ipcMain.on("open-borderless-draggable-window", (event) => {
+    if (mainWindow) {
+      setTimeout(() => {mainWindow.reload();}, 100);      
+      mainWindow.setFullScreen(false);
+      mainWindow.setKiosk(false);
+      mainWindow.setAlwaysOnTop(false);
+
+      setTimeout(() => {
+        mainWindow.setMovable(true);
+        mainWindow.setResizable(false);
+        mainWindow.setAlwaysOnTop(true, "screen-saver");
+
+        const { width, height } = screen.getPrimaryDisplay().size;
+        mainWindow.setBounds({
+          x: -1,
+          y: -1,
+          width: width + 5,
+          height: height + 5,
+        });
+
+        setWindowWithoutBorder(mainWindow);
+        mainWindow.reload();
+      }, 100);
+    }
+  });
+
+  // 2
+  ipcMain.on("open-bordered-draggable-window", (event) => {
+    if (mainWindow) {
+      mainWindow.reload();
+
+      mainWindow.setFullScreen(false);
+      mainWindow.setKiosk(false);
+      mainWindow.setAlwaysOnTop(false);
+
+      setTimeout(() => {
+        mainWindow.setMovable(true);
+        mainWindow.setResizable(false);
+        mainWindow.setAlwaysOnTop(true, "screen-saver");
+
+        const { width, height } = screen.getPrimaryDisplay().size;
+        mainWindow.setBounds({
+          x: -1,
+          y: -1,
+          width: width + 2,
+          height: height + 2,
+        });
+
+        setWindowWithBorder(mainWindow);
+      }, 100);
+    }
+  });
+
+  // 3
+  ipcMain.on("open-taskbar-draggable-window", (event) => {
+    if (mainWindow) {
+      mainWindow.reload();
+      mainWindow.setFullScreen(false);
+      mainWindow.setMovable(true);
+      mainWindow.setResizable(false);
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+      mainWindow.setBounds({
+        x: 0,
+        y: 0,
+        width,
+        height,
+      });
+      setWindowWithBorder(mainWindow);      
+    }
+  });
+
+  // 4
+  ipcMain.on("open-taskbar-borderless-window", (event) => {
+    if (mainWindow) {
+      mainWindow.reload();
+      mainWindow.setFullScreen(false);
+      mainWindow.setMovable(true);
+      mainWindow.setResizable(false);
+
+      const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+      mainWindow.setBounds({
+        x: -2,
+        y: -2,
+        width: width + 5,
+        height: height + 5,
+      });      
+    }
+  });
+
+  // let isResized = false;
+  // let lastUrl = "";
+
+  // ipcMain.on("window-resize", (event) => {
+  //   if (!mainWindow) return;
+
+  //   if (!isResized) {
+  //     mainWindow.setResizable(false);
+  //     mainWindow.setMaximizable(true);
+  //     mainWindow.setFullScreen(false);
+  //     lastUrl = mainWindow.webContents.getURL();
+  //   } else {
+  //     mainWindow.setFullScreen(true);
+  //     mainWindow.setResizable(false);
+  //     mainWindow.setMaximizable(false);
+  //     console.log("Switched to fullscreen mode:", lastUrl);
+  //   }
+
+  //   isResized = !isResized;
+  // });
 }
