@@ -20,7 +20,7 @@ function setWindowWithBorder(mainWindow) {
               }
 
               html {
-                border: 3px solid gray;
+                border: 2px solid gray;
                 box-sizing: border-box;
               }
 
