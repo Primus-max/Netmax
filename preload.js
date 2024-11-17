@@ -168,8 +168,7 @@ function checkAndToggleScrollBlock() {
   const currentUrl = document.location.href;
   if (
     currentUrl === "https://netmax.network/media/" ||
-    currentUrl === "https://netmax.network/homepage/" ||
-    currentUrl === "https://netmax.network/messenger/sample-page/"
+    currentUrl === "https://netmax.network/homepage/"    
   ) {
     enableScrollBlock();
   } else {
@@ -178,20 +177,17 @@ function checkAndToggleScrollBlock() {
 }
 
 function loadWinStatesModal() {
-  // Читаем HTML содержимое модального окна
   const modalHtml = fs.readFileSync(
     path.join(__dirname, "assets/tamplates/modals/winStateModal/modal.html"),
     "utf8"
   );
 
-  // Шрифты
   const fontLink = document.createElement("link");
   fontLink.rel = "stylesheet";
   fontLink.href =
     "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap";
   document.head.appendChild(fontLink);
 
-  // Создаем и добавляем CSS для модального окна
   const modalStyle = document.createElement("link");
   modalStyle.rel = "stylesheet";
   modalStyle.href = `file://${path.join(
@@ -200,15 +196,12 @@ function loadWinStatesModal() {
   )}`;
   document.head.appendChild(modalStyle);
 
-  // Вставляем HTML модального окна в конец <body>
   document.body.insertAdjacentHTML("beforeend", modalHtml);
 
-  // Добавляем обработчик для закрытия модального окна
   document
     .querySelector(".close-btn")
     .addEventListener("click", closeModalWinSet);
 
-  // Массив с путями к изображениям
   const imageData = [
     "win_01.png",
     "win_02.png",
@@ -217,23 +210,29 @@ function loadWinStatesModal() {
     "win_05.png",
   ];
 
-  // Получаем все элементы с классом 'image', которые являются <img>
   const imageElements = document.querySelectorAll(".image");
 
-  // Динамически заменяем изображения в каждом элементе
-  imageElements.forEach((imageElement, index) => {
-    if (imageData[index]) {
-      // Обновляем атрибуты src и alt для каждого изображения
-      imageElement.src = `file://${path.join(
-        __dirname,
-        "./assets/images/",
-        imageData[index]
-      )}`;
-      imageElement.alt = `Image ${index + 1}`;
-    }
+  // Preload images
+  imageData.forEach((img) => {
+    const imgPath = `file://${path.join(__dirname, "./assets/images/", img)}`;
+    const imgPreload = new Image();
+    imgPreload.src = imgPath;
   });
 
-  // Добавляем обработчик для каждого изображения
+  setTimeout(() => {
+    imageElements.forEach((imageElement, index) => {
+      if (imageData[index]) {
+        const imgPath = `file://${path.join(
+          __dirname,
+          "./assets/images/",
+          imageData[index]
+        )}`;
+        imageElement.src = imgPath;
+        imageElement.alt = `Image ${index + 1}`;
+      }
+    });
+  }, 500);
+
   imageElements.forEach((img, index) => {
     img.addEventListener("click", () => {
       openWindowAction(index + 1);

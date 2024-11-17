@@ -5,9 +5,10 @@ let mainWindow = null;
 let splash = null;
 let isLoggedOut = false;
 let isMiddleBtnBlocked = false;
+let isMainWinLoaded = false;
 
-app.commandLine.appendSwitch('high-dpi-support', '1');
-app.commandLine.appendSwitch('force-device-scale-factor', '1');
+app.commandLine.appendSwitch("high-dpi-support", "1");
+app.commandLine.appendSwitch("force-device-scale-factor", "1");
 
 // Параметры по умолчанию
 const defaultWindowOptions = {
@@ -76,34 +77,13 @@ function createWindow(options = {}) {
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
 
-  mainWindow.webContents.on("did-navigate", (event, url) => {
-    if (url === "https://netmax.network/menu/") {
-      if (splash) {
-        splash.destroy(); // Закрываем заставку
-        splash = null;
-      }
-      mainWindow.show(); // Показываем главное окно
-    }
-  });
-
   mainWindow.webContents.on("did-finish-load", () => {
-    const currentUrl = mainWindow.webContents.getURL();
-    if (currentUrl === "https://netmax.network/menu/") {
-      // setTimeout(() => {
-      //   if (splash) {
-      //     splash.destroy();
-      //     splash = null;
-      //     mainWindow.show();
-      //   }
-      // }, 5000);
-
-      mainWindow.webContents.executeJavaScript(`
-        const metaTag = document.createElement('meta');
-        metaTag.name = 'viewport';
-        metaTag.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
-        document.head.appendChild(metaTag);
-      `);
-    }  
+    mainWindow.webContents.executeJavaScript(`
+      const metaTag = document.createElement('meta');
+      metaTag.name = 'viewport';
+      metaTag.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+      document.head.appendChild(metaTag);
+    `);
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -129,11 +109,28 @@ function createWindow(options = {}) {
       };
     }
 
-    // Если не разрешено, возвращаем deny
     return { action: "deny" };
   });
 
+  splash.setAlwaysOnTop(true, "screen-saver");
+
+  splash.on("blur", () => {
+    if (splash) {
+      splash.setAlwaysOnTop(true, "screen-saver");
+    }
+  });
+
   mainWindow.webContents.on("will-navigate", async (event, url) => {
+    if (url === "https://netmax.network/menu/" && splash) {
+      console.log("Destroy splash");
+      splash.destroy();
+      splash = null;
+      mainWindow.show();
+      isMainWinLoaded = true;
+    } else {
+      if (!isMainWinLoaded) mainWindow.hide();
+    }
+
     if (isMiddleBtnBlocked) event.preventDefault();
     if (url.includes("action=logout")) {
       mainWindow.webContents.executeJavaScript(
@@ -141,7 +138,6 @@ function createWindow(options = {}) {
       );
     }
   });
-
   let eventTimeout;
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -161,11 +157,11 @@ function createWindow(options = {}) {
       return;
     }
 
-    isMiddleBtnBlocked = true;    
+    isMiddleBtnBlocked = true;
 
     clearTimeout(eventTimeout);
     eventTimeout = setTimeout(() => {
-      isMiddleBtnBlocked = false;      
+      isMiddleBtnBlocked = false;
     }, 1000);
   });
 
