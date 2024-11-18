@@ -4,6 +4,11 @@ const path = require("path");
 let mainWindow = null;
 let splash = null;
 let isLoggedOut = false;
+let isMiddleBtnBlocked = false;
+let isMainWinLoaded = false;
+
+app.commandLine.appendSwitch("high-dpi-support", "1");
+app.commandLine.appendSwitch("force-device-scale-factor", "1");
 
 // Параметры по умолчанию
 const defaultWindowOptions = {
@@ -13,6 +18,12 @@ const defaultWindowOptions = {
 };
 
 function createWindow(options = {}) {
+  if (isMiddleBtnBlocked) {
+    console.log("Middle button blocked, window will not be created.");
+    isMiddleBtnBlocked = false;
+    return null;
+  }
+
   const preloadPath = path.resolve(__dirname, "preload.js");
 
   // Объединяем переданные параметры с параметрами по умолчанию
@@ -44,8 +55,7 @@ function createWindow(options = {}) {
     fullscreen: windowOptions.fullscreen,
     closable: true,
     hiddenInMissionControl: true,
-    setAlwaysOnTop: true,
-    backgroundColor: "#9a9a9a",
+    //setAlwaysOnTop: true,
     icon: path.join(__dirname, "./assets/images/Icon46.png"),
     webPreferences: {
       nodeIntegration: true,
@@ -53,6 +63,8 @@ function createWindow(options = {}) {
       preload: preloadPath,
       enableRemoteModule: true,
       webSecurity: false,
+      zoomFactor: 1,
+      disableBlinkFeatures: "Autofill",
     },
     webContents: {
       backgroundThrottling: false,
@@ -60,16 +72,18 @@ function createWindow(options = {}) {
     },
   });
 
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
 
   mainWindow.webContents.on("did-finish-load", () => {
-    setTimeout(() => {
-      splash.destroy();
-      mainWindow.show();
-    }, 2000);
+    mainWindow.webContents.executeJavaScript(`
+      const metaTag = document.createElement('meta');
+      metaTag.name = 'viewport';
+      metaTag.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+      document.head.appendChild(metaTag);
+    `);
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -95,20 +109,60 @@ function createWindow(options = {}) {
       };
     }
 
-    // Если не разрешено, возвращаем deny
     return { action: "deny" };
   });
 
+  splash.setAlwaysOnTop(true, "screen-saver");
+
+  splash.on("blur", () => {
+    if (splash) {
+      splash.setAlwaysOnTop(true, "screen-saver");
+    }
+  });
+
   mainWindow.webContents.on("will-navigate", async (event, url) => {
+    if (url === "https://netmax.network/menu/" && splash) {
+      console.log("Destroy splash");
+      splash.destroy();
+      splash = null;
+      mainWindow.show();
+      isMainWinLoaded = true;
+    } else {
+      if (!isMainWinLoaded) mainWindow.hide();
+    }
+
+    if (isMiddleBtnBlocked) event.preventDefault();
     if (url.includes("action=logout")) {
       mainWindow.webContents.executeJavaScript(
         "localStorage.setItem('isLoggedOut', 'true');"
       );
     }
   });
+  let eventTimeout;
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (isMiddleBtnBlocked) {
+      return { action: "deny" };
+    }
+
+    if (url.includes("specific-condition")) {
+      return { action: "deny" };
+    }
+
+    return { action: "allow" };
+  });
 
   ipcMain.on("middle-btn-blocked", (event) => {
-    console.log("Middle button blocked");
+    if (isMiddleBtnBlocked) {
+      return;
+    }
+
+    isMiddleBtnBlocked = true;
+
+    clearTimeout(eventTimeout);
+    eventTimeout = setTimeout(() => {
+      isMiddleBtnBlocked = false;
+    }, 1000);
   });
 
   ipcMain.on("close-window", (event) => {

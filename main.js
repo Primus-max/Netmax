@@ -82,26 +82,27 @@ if (!gotTheLock) {
 
   ipcMain.on("window-fullscreen", (event) => {
     if (mainWindow) {
-      // mainWindow.setKiosk(false);                    // Отключаем режим киоска для сброса состояния
+      // // mainWindow.setKiosk(false);                    
       mainWindow.setAlwaysOnTop(false, "screen-saver");
       const { width, height } = screen.getPrimaryDisplay().size;
 
-      // Сбрасываем отступы и возвращаем окно на полный экран
+      
       mainWindow.setBounds({ x: 0, y: 0, width, height });
 
-      mainWindow.setFullScreen(true); // Принудительно включаем полноэкранный режим
-      mainWindow.setResizable(false); // Снова отключаем изменение размеров
-      mainWindow.setMaximizable(false); // Отключаем возможность максимизации
-      mainWindow.setAlwaysOnTop(false); // Отключаем режим "всегда поверх" на случай, если он был установлен
+      mainWindow.setFullScreen(true);
+      mainWindow.setResizable(false);
+      mainWindow.setMaximizable(false);
+      mainWindow.setAlwaysOnTop(false);
 
-      setWindowWithoutBorder(mainWindow); // Применяем стиль без рамки
-      console.log("Переключено в полноценный полноэкранный режим.");
+      setWindowWithoutBorder(mainWindow);    
+      mainWindow.reload();  
     }
   });
 
   // 1
   ipcMain.on("open-borderless-draggable-window", (event) => {
     if (mainWindow) {
+      setTimeout(() => {mainWindow.reload();}, 100);      
       mainWindow.setFullScreen(false);
       mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false);
@@ -113,13 +114,14 @@ if (!gotTheLock) {
 
         const { width, height } = screen.getPrimaryDisplay().size;
         mainWindow.setBounds({
-          x: 0,
-          y: 0,
-          width: width - 1,
-          height: height - 1,
+          x: -1,
+          y: -1,
+          width: width + 5,
+          height: height + 5,
         });
 
         setWindowWithoutBorder(mainWindow);
+        mainWindow.reload();
       }, 100);
     }
   });
@@ -127,6 +129,8 @@ if (!gotTheLock) {
   // 2
   ipcMain.on("open-bordered-draggable-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
+
       mainWindow.setFullScreen(false);
       mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false);
@@ -138,10 +142,10 @@ if (!gotTheLock) {
 
         const { width, height } = screen.getPrimaryDisplay().size;
         mainWindow.setBounds({
-          x: 0,
-          y: 0,
-          width: width - 1,
-          height: height - 1,
+          x: -1,
+          y: -1,
+          width: width + 2,
+          height: height + 2,
         });
 
         setWindowWithBorder(mainWindow);
@@ -152,6 +156,7 @@ if (!gotTheLock) {
   // 3
   ipcMain.on("open-taskbar-draggable-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
       mainWindow.setFullScreen(false);
       mainWindow.setMovable(true);
       mainWindow.setResizable(false);
@@ -162,24 +167,25 @@ if (!gotTheLock) {
         width,
         height,
       });
-      setWindowWithBorder(mainWindow);
+      setWindowWithBorder(mainWindow);      
     }
   });
 
   // 4
   ipcMain.on("open-taskbar-borderless-window", (event) => {
     if (mainWindow) {
+      mainWindow.reload();
       mainWindow.setFullScreen(false);
       mainWindow.setMovable(true);
       mainWindow.setResizable(false);
 
       const { width, height } = screen.getPrimaryDisplay().workAreaSize;
       mainWindow.setBounds({
-        x: 0,
-        y: 0,
-        width,
-        height,
-      });
+        x: -2,
+        y: -2,
+        width: width + 5,
+        height: height + 5,
+      });      
     }
   });
 
