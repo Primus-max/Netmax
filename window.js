@@ -72,7 +72,7 @@ function createWindow(options = {}) {
     },
   });
 
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
@@ -121,7 +121,15 @@ function createWindow(options = {}) {
   });
 
   mainWindow.webContents.on("will-navigate", async (event, url) => {
-    if (url === "https://netmax.network/menu/" && splash) {
+    const logins = await mainWindow.webContents.executeJavaScript(
+      "localStorage.getItem('logins');"
+    );
+
+    const noLogins = !logins || logins.length === 0; // Проверка состояния логинов
+    const isMenuPage = url === "https://netmax.network/menu/";
+
+    // Если логины отсутствуют или это главная страница, уничтожаем splash
+    if (splash && (isMenuPage || noLogins)) {
       console.log("Destroy splash");
       splash.destroy();
       splash = null;
@@ -138,6 +146,7 @@ function createWindow(options = {}) {
       );
     }
   });
+
   let eventTimeout;
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
