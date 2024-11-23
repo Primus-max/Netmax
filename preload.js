@@ -321,9 +321,13 @@ function closeModalWinSet() {
   });
 }
 
-function trackSaveUserDataBtn (){
+function trackSaveUserDataBtn (){  
   const btn = document.querySelector('.woocommerce-Button.button');
-   btn.addEventListener('click', () =>{
-      location.href = 'https://netmax.network/homepage/';
+  if(btn){    
+    btn.addEventListener('click', () =>{      
+      setTimeout(() => {
+        location.href = 'https://netmax.network/homepage/';
+      }, 100);
    })
+  }   
 }
