@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   checkAndToggleScrollBlock(); // Проверка и применение блокировки скролла
 
   trackLoginForm(); // Сохранение авторизационных данных
+  trackSaveUserDataBtn(); // Отслеживание если пользователь редактировал свои данные
   loadWinStatesModal(); // Встраиваем модальное окно для выбора размера окна
 
   const closeButton = createCloseButton();
@@ -318,4 +319,11 @@ function closeModalWinSet() {
       { once: true }
     );
   });
+}
+
+function trackSaveUserDataBtn (){
+  const btn = document.querySelector('.woocommerce-Button.button');
+   btn.addEventListener('click', () =>{
+      location.href = 'https://netmax.network/homepage/';
+   })
 }
