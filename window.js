@@ -3,7 +3,7 @@ const path = require("path");
 
 let mainWindow = null;
 let splash = null;
-let isLoggedOut = false;
+//let isLoggedOut = false;
 let isMiddleBtnBlocked = false;
 let isMainWinLoaded = false;
 
@@ -72,7 +72,7 @@ function createWindow(options = {}) {
     },
   });
 
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   Menu.setApplicationMenu(null);
   mainWindow.loadURL("https://netmax.network");
@@ -121,15 +121,18 @@ function createWindow(options = {}) {
   });
 
   mainWindow.webContents.on("will-navigate", async (event, url) => {
+    const isLoggedOut = await mainWindow.webContents.executeJavaScript(
+      "localStorage.getItem('isLoggedOut');"
+    );
+    const isMenuPage = url === "https://netmax.network/menu/";
     const logins = await mainWindow.webContents.executeJavaScript(
       "localStorage.getItem('logins');"
     );
 
     const noLogins = !logins || logins.length === 0; // Проверка состояния логинов
-    const isMenuPage = url === "https://netmax.network/menu/";
 
     // Если логины отсутствуют или это главная страница, уничтожаем splash
-    if (splash && (isMenuPage || noLogins)) {
+    if (splash && (isMenuPage || noLogins )) {
       console.log("Destroy splash");
       splash.destroy();
       splash = null;
@@ -179,6 +182,9 @@ function createWindow(options = {}) {
     mainWindow.hide();
   });
 
+  // ipcMain.on("relaunch", (event) => {
+  //   app.off();
+  // });
   return mainWindow;
 }
 

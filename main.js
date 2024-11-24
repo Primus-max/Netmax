@@ -82,11 +82,10 @@ if (!gotTheLock) {
 
   ipcMain.on("window-fullscreen", (event) => {
     if (mainWindow) {
-      // // mainWindow.setKiosk(false);                    
+      // // mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false, "screen-saver");
       const { width, height } = screen.getPrimaryDisplay().size;
 
-      
       mainWindow.setBounds({ x: 0, y: 0, width, height });
 
       mainWindow.setFullScreen(true);
@@ -94,15 +93,17 @@ if (!gotTheLock) {
       mainWindow.setMaximizable(false);
       mainWindow.setAlwaysOnTop(false);
 
-      setWindowWithoutBorder(mainWindow);    
-      mainWindow.reload();  
+      setWindowWithoutBorder(mainWindow);
+      mainWindow.reload();
     }
   });
 
   // 1
   ipcMain.on("open-borderless-draggable-window", (event) => {
     if (mainWindow) {
-      setTimeout(() => {mainWindow.reload();}, 100);      
+      setTimeout(() => {
+        mainWindow.reload();
+      }, 100);
       mainWindow.setFullScreen(false);
       mainWindow.setKiosk(false);
       mainWindow.setAlwaysOnTop(false);
@@ -167,7 +168,7 @@ if (!gotTheLock) {
         width,
         height,
       });
-      setWindowWithBorder(mainWindow);      
+      setWindowWithBorder(mainWindow);
     }
   });
 
@@ -185,10 +186,19 @@ if (!gotTheLock) {
         y: -2,
         width: width + 5,
         height: height + 5,
-      });      
+      });
     }
   });
 
+  ipcMain.on("relaunch", (event) => {
+    console.log("Ща будет перезагрузка");
+    app.off();
+    //app.relaunch();
+  });
+
+  // ipcMain.on('set-isLogOut', (event) => {
+  //   console.log('ПИДОРАСИНА')
+  // })
   // let isResized = false;
   // let lastUrl = "";
 

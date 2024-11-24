@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, app } = require("electron");
 //const keytar = require("keytar");
 //const { webFrame } = require("electron");
 const createCloseButton = require("./assets/tamplates/closeButton.js");
@@ -42,6 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const enterButton = document.getElementById("slider-1-slide-1-layer-20");
   enterButton?.click();
 
+  // Блокировка перехода назад
+  blockBackBtn();
+
   // Cлушатель на изменение URL
   document.addEventListener("popstate", checkAndToggleScrollBlock);
 
@@ -84,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   maximizeBtn.addEventListener("click", () => {
     ipcRenderer.send("window-fullscreen");
-  }); 
+  });
 
   // Блокировка скролла по нажатию колёсика мыши
   document.addEventListener(
@@ -169,7 +172,7 @@ function checkAndToggleScrollBlock() {
   const currentUrl = document.location.href;
   if (
     currentUrl === "https://netmax.network/media/" ||
-    currentUrl === "https://netmax.network/homepage/"    
+    currentUrl === "https://netmax.network/homepage/"
   ) {
     enableScrollBlock();
   } else {
@@ -267,7 +270,7 @@ function openWindowAction(imageNumber) {
 // 1
 async function openBorderlessDraggableWindow() {
   await closeModalWinSet();
-  setTimeout(() => {
+  setTimeout(() => {    
     ipcRenderer.send("open-borderless-draggable-window");
   }, 200);
 }
@@ -321,13 +324,56 @@ function closeModalWinSet() {
   });
 }
 
-function trackSaveUserDataBtn (){  
-  const btn = document.querySelector('.woocommerce-Button.button');
-  if(btn){    
-    btn.addEventListener('click', () =>{      
-      setTimeout(() => {
-        location.href = 'https://netmax.network/homepage/';
-      }, 100);
-   })
-  }   
+
+let shouldPreventUnload = false;
+
+function trackSaveUserDataBtn() {
+  const btn = document.getElementById("edit_profile");
+  if (btn) {
+    console.log("Получил кнопку", btn);
+    btn.addEventListener("click", (event) => {
+      // shouldPreventUnload = true; // Устанавливаем флаг для предотвращения перезагрузки
+      // console.log('Сохраняем данные пользователя');
+      
+      // Здесь добавьте логику сохранения данных
+      //ipcRenderer.send("relaunch");
+    });
+  }
 }
+
+window.addEventListener('beforeunload', (event) => {
+  if (shouldPreventUnload) {
+    console.log('Останавливаю перезагрузку');
+    event.preventDefault();
+    event.returnValue = ''; // Современные браузеры требуют установки returnValue
+    shouldPreventUnload = false; // Сбрасываем флаг после предотвращения
+  }
+});
+function blockBackBtn() {
+  document.addEventListener(
+    "mousedown",
+    function (event) {
+      console.log(`Был клик ${event.button} и был переход ${this.location.href}` );
+      if (
+        event.button === 3 &&
+        this.location.href ===
+          "https://netmax.network/publications/my-account/" || this.location.href === "https://netmax.network/menu/"
+      ) {
+        console.log('Блокирую переход');
+        event.preventDefault();
+      }
+    },
+    true
+  );
+}
+
+// window.addEventListener('popstate', function(event) {
+//   console.log('Перехода')
+//   if (location.href === "https://netmax.network/publications/my-account/edit-account") {
+
+//     history.pushState(null, '', location.href);
+//     event.preventDefault();
+//   }
+// });
+
+// https://netmax.network/мой-аккаунт/
