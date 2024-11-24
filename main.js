@@ -190,11 +190,11 @@ if (!gotTheLock) {
     }
   });
 
-  ipcMain.on("relaunch", (event) => {
-    console.log("Ща будет перезагрузка");
-    app.off();
-    //app.relaunch();
-  });
+  // ipcMain.on("relaunch", (event) => {
+  //   console.log("Ща будет перезагрузка");
+  //   //app.off();
+  //   //app.relaunch();
+  // });
 
   // ipcMain.on('set-isLogOut', (event) => {
   //   console.log('ПИДОРАСИНА')

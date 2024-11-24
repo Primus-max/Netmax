@@ -270,7 +270,7 @@ function openWindowAction(imageNumber) {
 // 1
 async function openBorderlessDraggableWindow() {
   await closeModalWinSet();
-  setTimeout(() => {    
+  setTimeout(() => {
     ipcRenderer.send("open-borderless-draggable-window");
   }, 200);
 }
@@ -324,48 +324,43 @@ function closeModalWinSet() {
   });
 }
 
-
-let shouldPreventUnload = false;
-
 function trackSaveUserDataBtn() {
-  const btn = document.getElementById("edit_profile");
+  const btn = document.querySelector(
+    ".wp-block-button__link.wp-element-button"
+  );
   if (btn) {
     console.log("Получил кнопку", btn);
     btn.addEventListener("click", (event) => {
-      // shouldPreventUnload = true; // Устанавливаем флаг для предотвращения перезагрузки
-      // console.log('Сохраняем данные пользователя');
-      
-      // Здесь добавьте логику сохранения данных
+      location.href = "https://netmax.network/homepage"
       //ipcRenderer.send("relaunch");
     });
   }
 }
 
-window.addEventListener('beforeunload', (event) => {
-  if (shouldPreventUnload) {
-    console.log('Останавливаю перезагрузку');
-    event.preventDefault();
-    event.returnValue = ''; // Современные браузеры требуют установки returnValue
-    shouldPreventUnload = false; // Сбрасываем флаг после предотвращения
-  }
-});
 function blockBackBtn() {
   document.addEventListener(
     "mousedown",
     function (event) {
-      console.log(`Был клик ${event.button} и был переход ${this.location.href}` );
+      console.log(
+        `Был клик ${event.button} и был переход ${this.location.href}`
+      );
       if (
-        event.button === 3 &&
-        this.location.href ===
-          "https://netmax.network/publications/my-account/" || this.location.href === "https://netmax.network/menu/"
+        (event.button === 3 &&
+          this.location.href ===
+            "https://netmax.network/publications/my-account/") ||
+        this.location.href === "https://netmax.network/menu/"
       ) {
-        console.log('Блокирую переход');
+        console.log("Блокирую переход");
         event.preventDefault();
       }
     },
     true
   );
 }
+
+// floatBtn-1
+
+// авторизоваться wp-block-button__link wp-element-button
 
 // window.addEventListener('popstate', function(event) {
 //   console.log('Перехода')
