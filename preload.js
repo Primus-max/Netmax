@@ -331,8 +331,10 @@ function trackSaveUserDataBtn() {
   if (btn) {
     console.log("Получил кнопку", btn);
     btn.addEventListener("click", (event) => {
-      location.href = "https://netmax.network/homepage"
-      //ipcRenderer.send("relaunch");
+      //location.href = "https://netmax.network/wp-login.php?action=logout&redirect_to=https%3A%2F%2Fnetmax.network&_wpnonce=0e81d3e809";
+      //href="https://netmax.network/wp-login.php?action=logout&redirect_to=https%3A%2F%2Fnetmax.network&_wpnonce=ffc9bd7840"
+      //location.href = "https://netmax.network/homepage"
+      ipcRenderer.send("relaunch");
     });
   }
 }
