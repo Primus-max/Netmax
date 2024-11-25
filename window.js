@@ -185,8 +185,8 @@ function createWindow(options = {}) {
   ipcMain.on("relaunch", (event) => {
     console.log("Relaunch...");
     
-    app.relaunch();  // Перезапускаем приложение
-    app.exit();      // Закрываем текущее приложение
+    app.relaunch();  
+    app.exit();     
   });
 
 

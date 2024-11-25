@@ -29,7 +29,7 @@ function authorize() {
   function trackLoginForm() {
     const emailInput = document.getElementById("pxp-signin-modal-email");
     const passwordInput = document.getElementById("pxp-signin-modal-password");
-    const submitButton = document.querySelector(".pxp-signin-modal-btn");
+    const submitButton = document.querySelector(".pxp-signin-modal-btn-text");
   
     if (emailInput && passwordInput && submitButton) {
       submitButton.addEventListener("click", (event) => {

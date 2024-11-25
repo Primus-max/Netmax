@@ -329,35 +329,27 @@ function trackSaveUserDataBtn() {
     ".wp-block-button__link.wp-element-button"
   );
   if (btn) {
-    console.log("Получил кнопку", btn);
     btn.addEventListener("click", (event) => {
-      //location.href = "https://netmax.network/wp-login.php?action=logout&redirect_to=https%3A%2F%2Fnetmax.network&_wpnonce=0e81d3e809";
-      //href="https://netmax.network/wp-login.php?action=logout&redirect_to=https%3A%2F%2Fnetmax.network&_wpnonce=ffc9bd7840"
-      //location.href = "https://netmax.network/homepage"
       ipcRenderer.send("relaunch");
     });
   }
 }
 
 function blockBackBtn() {
-  document.addEventListener(
-    "mousedown",
-    function (event) {
-      console.log(
-        `Был клик ${event.button} и был переход ${this.location.href}`
-      );
+  document.addEventListener("mousedown", function (event) {
+   
+    if (event.button === 3) {
+      const currentUrl = window.location.href;         
       if (
-        (event.button === 3 &&
-          this.location.href ===
-            "https://netmax.network/publications/my-account/") ||
-        this.location.href === "https://netmax.network/menu/"
+        currentUrl === "https://netmax.network/publications/my-account/" ||
+        currentUrl === "https://netmax.network/menu/"
       ) {
-        console.log("Блокирую переход");
-        event.preventDefault();
+        console.log("Блокирую переход с URL:", currentUrl);
+        window.history.pushState(null, "", currentUrl);
+        event.preventDefault(); // Предотвращаем переход
       }
-    },
-    true
-  );
+    }
+  }, true);
 }
 
 // floatBtn-1
