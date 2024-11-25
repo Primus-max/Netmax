@@ -346,23 +346,10 @@ function blockBackBtn() {
       ) {
         console.log("Блокирую переход с URL:", currentUrl);
         window.history.pushState(null, "", currentUrl);
-        event.preventDefault(); // Предотвращаем переход
+        event.preventDefault();
       }
     }
   }, true);
 }
 
-// floatBtn-1
 
-// авторизоваться wp-block-button__link wp-element-button
-
-// window.addEventListener('popstate', function(event) {
-//   console.log('Перехода')
-//   if (location.href === "https://netmax.network/publications/my-account/edit-account") {
-
-//     history.pushState(null, '', location.href);
-//     event.preventDefault();
-//   }
-// });
-
-// https://netmax.network/мой-аккаунт/
