@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   maximizeBtn.addEventListener("click", () => {
-    ipcRenderer.send("window-fullscreen");
+    location.reload();
   });
 
   // Блокировка скролла по нажатию колёсика мыши
@@ -329,7 +329,7 @@ function trackSaveUserDataBtn() {
     ".wp-block-button__link.wp-element-button"
   );
   if (btn) {
-    btn.addEventListener("click", (event) => {
+    btn.addEventListener("click", (event) => {    
       ipcRenderer.send("relaunch");
     });
   }
@@ -337,7 +337,7 @@ function trackSaveUserDataBtn() {
 
 function blockBackBtn() {
   document.addEventListener("mousedown", function (event) {
-   
+   console.log('нажата кнопка', event.button);
     if (event.button === 3) {
       const currentUrl = window.location.href;         
       if (
