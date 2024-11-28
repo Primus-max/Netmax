@@ -121,8 +121,7 @@ if (!gotTheLock) {
           height: height + 5,
         });
 
-        setWindowWithoutBorder(mainWindow);
-        mainWindow.reload();
+        setWindowWithoutBorder(mainWindow);       
       }, 100);
     }
   });
@@ -189,34 +188,4 @@ if (!gotTheLock) {
       });
     }
   });
-
-  // ipcMain.on("relaunch", (event) => {
-  //   console.log("Ща будет перезагрузка");
-  //   //app.off();
-  //   //app.relaunch();
-  // });
-
-  // ipcMain.on('set-isLogOut', (event) => {
-  //   console.log('ПИДОРАСИНА')
-  // })
-  // let isResized = false;
-  // let lastUrl = "";
-
-  // ipcMain.on("window-resize", (event) => {
-  //   if (!mainWindow) return;
-
-  //   if (!isResized) {
-  //     mainWindow.setResizable(false);
-  //     mainWindow.setMaximizable(true);
-  //     mainWindow.setFullScreen(false);
-  //     lastUrl = mainWindow.webContents.getURL();
-  //   } else {
-  //     mainWindow.setFullScreen(true);
-  //     mainWindow.setResizable(false);
-  //     mainWindow.setMaximizable(false);
-  //     console.log("Switched to fullscreen mode:", lastUrl);
-  //   }
-
-  //   isResized = !isResized;
-  // });
 }
