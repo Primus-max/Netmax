@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   maximizeBtn.addEventListener("click", () => {
-    ipcRenderer.send("window-fullscreen");
+    location.reload();
   });
 
   // Блокировка скролла по нажатию колёсика мыши
@@ -329,46 +329,27 @@ function trackSaveUserDataBtn() {
     ".wp-block-button__link.wp-element-button"
   );
   if (btn) {
-    console.log("Получил кнопку", btn);
-    btn.addEventListener("click", (event) => {
-      location.href = "https://netmax.network/homepage"
-      //ipcRenderer.send("relaunch");
+    btn.addEventListener("click", (event) => {    
+      ipcRenderer.send("relaunch");
     });
   }
 }
 
 function blockBackBtn() {
-  document.addEventListener(
-    "mousedown",
-    function (event) {
-      console.log(
-        `Был клик ${event.button} и был переход ${this.location.href}`
-      );
+  document.addEventListener("mousedown", function (event) {
+   console.log('нажата кнопка', event.button);
+    if (event.button === 3) {
+      const currentUrl = window.location.href;         
       if (
-        (event.button === 3 &&
-          this.location.href ===
-            "https://netmax.network/publications/my-account/") ||
-        this.location.href === "https://netmax.network/menu/"
+        currentUrl === "https://netmax.network/publications/my-account/" ||
+        currentUrl === "https://netmax.network/menu/"
       ) {
-        console.log("Блокирую переход");
+        console.log("Блокирую переход с URL:", currentUrl);
+        window.history.pushState(null, "", currentUrl);
         event.preventDefault();
       }
-    },
-    true
-  );
+    }
+  }, true);
 }
 
-// floatBtn-1
 
-// авторизоваться wp-block-button__link wp-element-button
-
-// window.addEventListener('popstate', function(event) {
-//   console.log('Перехода')
-//   if (location.href === "https://netmax.network/publications/my-account/edit-account") {
-
-//     history.pushState(null, '', location.href);
-//     event.preventDefault();
-//   }
-// });
-
-// https://netmax.network/мой-аккаунт/

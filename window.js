@@ -183,10 +183,13 @@ function createWindow(options = {}) {
   });
 
   ipcMain.on("relaunch", (event) => {
-    console.log("NFNFNFNFN");
-    mainWindow?.reload();
-    app?.off();
+    console.log("Relaunch...");
+    
+    app.relaunch();  
+    app.exit();     
   });
+
+
   return mainWindow;
 }
 
