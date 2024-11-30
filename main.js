@@ -122,7 +122,8 @@ if (!gotTheLock) {
         });
 
         setWindowWithoutBorder(mainWindow);
-        mainWindow.reload();
+        // app.relaunch();
+        // mainWindow = createWindow();
       }, 100);
     }
   });

@@ -12,7 +12,7 @@ const {
   autoLogin,
 } = require("./utils/authorize.js");
 const { handleMouseMoveUpdate } = require("./utils/windowUtils.js");
-const { saveLoginData } = require("./store/localStorageStore.js");
+const { saveLoginData, getLoginData } = require("./store/localStorageStore.js");
 const { createLoginDropdown } = require("./utils/htmlGeneratorUtils.js");
 const { createHeader } = require("./assets/tamplates/header.js");
 
@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   trackLoginForm(); // Сохранение авторизационных данных
   trackSaveUserDataBtn(); // Отслеживание если пользователь редактировал свои данные
+  trackUpdatePasswor(); // Если пользователь изменил пароль 
   loadWinStatesModal(); // Встраиваем модальное окно для выбора размера окна
 
   const closeButton = createCloseButton();
@@ -115,7 +116,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("contextmenu", (event) => {
     if (
       document.location.href === "https://netmax.network/menu/" ||
-      document.location.href === "https://netmax.network/homepage/"
+      document.location.href === "https://netmax.network/homepage/" ||
+      document.location.href === "https://netmax.network/publications/my-account/" 
     )
       return;
 
@@ -328,18 +330,52 @@ function trackSaveUserDataBtn() {
   const btn = document.querySelector(
     ".wp-block-button__link.wp-element-button"
   );
-  if (btn) {
-    btn.addEventListener("click", (event) => {    
+  if (btn && btn.textContent === "Авторизоваться") {
+    btn.addEventListener("click", (event) => {
       ipcRenderer.send("relaunch");
     });
   }
 }
 
+function trackUpdatePasswor() {
+  const btn = document.getElementById("edit_profile");
+  const emailInput = document.getElementById("email");
+  const passInput = document.getElementById("passw2");
+
+  if (btn) {
+    btn.addEventListener("click", (event) => {
+      const email = emailInput.value;
+      const newPassword = passInput.value;
+
+      if (email && newPassword) {
+        const currentLoginData = getLoginData();
+
+        const existingData = currentLoginData.find(data => data.email === email);
+
+        if (existingData) {
+          if (existingData.password !== newPassword) {
+            console.log(`Пароль для ${email} изменен. Обновляем данные.`);
+            saveLoginData(email, newPassword); 
+          } else {
+            console.log(`Пароль для ${email} не изменился.`);
+          }
+        } else {
+          console.log(`Нет данных для ${email}. Добавляем новый логин.`);
+          saveLoginData(email, newPassword);
+        }
+      } else {
+        console.log("Email или пароль не могут быть пустыми.");
+      }
+    });
+  }
+}
+
+
 function blockBackBtn() {
   document.addEventListener("mousedown", function (event) {
-   console.log('нажата кнопка', event.button);
+    console.log('нажата кнопка', event.button);
     if (event.button === 3) {
-      const currentUrl = window.location.href;         
+      const currentUrl = window.location.href;
       if (
         currentUrl === "https://netmax.network/publications/my-account/" ||
         currentUrl === "https://netmax.network/menu/"
